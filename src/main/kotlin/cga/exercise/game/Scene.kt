@@ -83,7 +83,7 @@ class Scene(private val window: GameWindow) {
             exitProcess(1)
         }
         enemyCycle?.meshes?.get(2)?.material?.emitColor = Vector3f(1.0f, 0.0f, 0.0f)
-        enemyCycle?.scaleLocal(Vector3f(0.8f))
+        enemyCycle?.scaleLocal(Vector3f(0.5f))
 
 
         val diffTex = Texture2D("assets/textures/ground_diff.png", true)
@@ -157,6 +157,10 @@ class Scene(private val window: GameWindow) {
 
         if(window.getKeyState(GLFW.GLFW_KEY_W)) {
             speed = -5.0f
+            if (window.getKeyState(GLFW.GLFW_KEY_SPACE)) {
+                speed = -15.0f
+            }
+
         }
         else if(window.getKeyState(GLFW.GLFW_KEY_S)) {
             speed = 5.0f
@@ -175,6 +179,39 @@ class Scene(private val window: GameWindow) {
         {
             lightCycle?.rotateAroundPoint(0.0f,  (360 * speed)/(2.0f*Math.PI.toFloat() * turningCycleRadius) * rotationDirection * dt, 0.0f, lightCycle!!.getWorldPosition().add(lightCycle!!.getXAxis().mul(turningCycleRadius*rotationDirection)))
         }
+
+        // Spaß
+        var lightX = lightCycle?.getWorldPosition()
+        var lightY = lightCycle?.getWorldPosition()
+
+        var lx = lightX!!.x
+        var ly = lightY!!.z
+
+        var enemyX = enemyCycle?.getWorldPosition()
+        var enemyY = enemyCycle?.getWorldPosition()
+
+        var ex = enemyX!!.x
+        var ey = enemyY!!.z
+
+        var xDistance = lx - ex
+        var yDistance = ly - ey
+
+
+
+        if (xDistance > 1f && xDistance != 0f){
+            enemyCycle?.translateLocal(Vector3f(2f * dt, 0f, 0f * dt))
+        } else if (xDistance < 1f && xDistance != 0f){
+            enemyCycle?.translateLocal(Vector3f(-2f * dt, 0f, 0f * dt))
+        }
+
+        if (yDistance > 1f && yDistance != 0f) {
+            enemyCycle?.translateLocal(Vector3f(0f * dt, 0f, 2f * dt))
+        } else if (yDistance < 1f && yDistance != 0f){
+            enemyCycle?.translateLocal(Vector3f(0f * dt, 0f, -2f * dt))
+        }
+
+
+
 
         lightCycle?.meshes?.get(2)?.material?.emitColor = Vector3f((Math.sin(t) + 1.0f)/2, (Math.sin(t*2) + 1.0f)/2, (Math.sin(t*3) + 1.0f)/2)
 
