@@ -18,10 +18,8 @@ import cga.framework.OBJLoader.OBJResult
 import org.joml.*
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL11.*
-import java.io.File
-import javax.sound.sampled.AudioInputStream
-import javax.sound.sampled.AudioSystem
-import javax.sound.sampled.Clip
+import kotlin.math.acos
+import kotlin.math.sqrt
 import kotlin.system.exitProcess
 
 
@@ -34,7 +32,7 @@ class Scene(private val window: GameWindow) {
     private val cam : TronCamera
 
     private var ground : Renderable
-    private var lightCycle : Renderable?
+    var lightCycle : Renderable?
     var enemyCycle : Renderable?
 
     private var licht1 : PointLight
@@ -149,8 +147,7 @@ class Scene(private val window: GameWindow) {
         ground.render(staticShader)
     }
 
-
-    fun update(dt: Float, t: Float) {
+    fun playerWalking(x : Renderable?, dt : Float){
         var speed = 0.0f;
         var rotationDirection = 0.0f
         var turningCycleRadius = 3.0f
@@ -160,11 +157,11 @@ class Scene(private val window: GameWindow) {
             if (window.getKeyState(GLFW.GLFW_KEY_SPACE)) {
                 speed = -15.0f
             }
-
         }
         else if(window.getKeyState(GLFW.GLFW_KEY_S)) {
             speed = 5.0f
         }
+
         if(window.getKeyState(GLFW.GLFW_KEY_A)) {
             rotationDirection = -1.0f
         }
@@ -173,48 +170,67 @@ class Scene(private val window: GameWindow) {
         }
 
         if(rotationDirection == 0.0f){
-            lightCycle?.translateLocal(Vector3f(0.0f, 0.0f, speed * dt))
+            x?.translateLocal(Vector3f(0.0f, 0.0f, speed * dt))
         }
         else if(speed != 0.0f)
         {
-            lightCycle?.rotateAroundPoint(0.0f,  (360 * speed)/(2.0f*Math.PI.toFloat() * turningCycleRadius) * rotationDirection * dt, 0.0f, lightCycle!!.getWorldPosition().add(lightCycle!!.getXAxis().mul(turningCycleRadius*rotationDirection)))
+            x?.rotateAroundPoint(0.0f,  (360 * speed)/(2.0f*Math.PI.toFloat() * turningCycleRadius) * rotationDirection * dt, 0.0f, x!!.getWorldPosition().add(x!!.getXAxis().mul(turningCycleRadius*rotationDirection)))
         }
+    }
 
-        // Spaß
-        var lightX = lightCycle?.getWorldPosition()
-        var lightY = lightCycle?.getWorldPosition()
-
-        var lx = lightX!!.x
-        var ly = lightY!!.z
-
-        var enemyX = enemyCycle?.getWorldPosition()
-        var enemyY = enemyCycle?.getWorldPosition()
-
-        var ex = enemyX!!.x
-        var ey = enemyY!!.z
-
-        var xDistance = lx - ex
-        var yDistance = ly - ey
+    fun enemyLogic( enemy : Renderable? , dt : Float , player : Renderable? ){
 
 
+        var lightX = player?.getWorldPosition();
+        var lightY = player?.getWorldPosition();
 
-        if (xDistance > 1f && xDistance != 0f){
-            enemyCycle?.translateLocal(Vector3f(2f * dt, 0f, 0f * dt))
+        var lx : Float = lightX!!.x;
+        var ly : Float= lightY!!.z;
+
+        var enemyX = enemy?.getWorldPosition();
+        var enemyY = enemy?.getWorldPosition();
+
+        var ex = enemyX!!.x;
+        var ey = enemyY!!.z;
+
+        var xDistance = lx - ex;
+        var yDistance = ly - ey;
+
+
+
+        if (xDistance > 0.1f && xDistance != 0f){
+            enemy?.translateLocal(Vector3f(2f * dt, 0f, 0f * dt))
         } else if (xDistance < 1f && xDistance != 0f){
-            enemyCycle?.translateLocal(Vector3f(-2f * dt, 0f, 0f * dt))
+            enemy?.translateLocal(Vector3f(-2f * dt, 0f, 0f * dt))
         }
 
-        if (yDistance > 1f && yDistance != 0f) {
-            enemyCycle?.translateLocal(Vector3f(0f * dt, 0f, 2f * dt))
+        if (yDistance > 0.1f && yDistance != 0f) {
+            enemy?.translateLocal(Vector3f(0f * dt, 0f, 2f * dt))
+            //enemyCycle?.rotateAroundPoint(0.0f,  (360 * speed)/(2.0f*Math.PI.toFloat() * turningCycleRadius) * rotationDirection * dt, 0.0f, enemyCycle!!.getWorldPosition().add(enemyCycle!!.getXAxis().mul(turningCycleRadius*rotationDirection)))
+
         } else if (yDistance < 1f && yDistance != 0f){
-            enemyCycle?.translateLocal(Vector3f(0f * dt, 0f, -2f * dt))
+            enemy?.translateLocal(Vector3f(0f * dt, 0f, -2f * dt))
         }
 
+        //calculating the angle
+        //val numerator: Float = (lx * ex) + (ly * ey)
+        //val denominator: Float = sqrt(lx * lx + ly * ly) * sqrt(ex * ex + ey * ey)
+        //val angle: Float = acos(numerator / denominator)
+        //println(denominator)
+        //if (denominator < 20f){
+        //    enemyCycle?.rotateAroundPoint(0.0f,  -1.0f, 0.0f, enemyCycle!!.getWorldPosition().add(enemyCycle!!.getXAxis()))
+       // }
+
+    }
 
 
+    fun update(dt: Float, t: Float) {
+
+        playerWalking(lightCycle, dt);
+
+        enemyLogic(enemyCycle, dt , lightCycle);
 
         lightCycle?.meshes?.get(2)?.material?.emitColor = Vector3f((Math.sin(t) + 1.0f)/2, (Math.sin(t*2) + 1.0f)/2, (Math.sin(t*3) + 1.0f)/2)
-
     }
 
     fun onKey(key: Int, scancode: Int, action: Int, mode: Int) {}
@@ -224,7 +240,7 @@ class Scene(private val window: GameWindow) {
 
     fun onMouseMove(xpos: Double, ypos: Double) {
 
-        cam.rotateAroundPoint((oldMousePosY-ypos).toFloat() * 0.002f, (oldMousePosX - xpos).toFloat() * 0.02f, 0.0f, Vector3f(0.0f))
+        cam.rotateAroundPoint(0.0f , (oldMousePosX - xpos).toFloat() * 0.1f, 0.0f, Vector3f(0.0f))
         oldMousePosX = xpos
         oldMousePosY = ypos
     }
