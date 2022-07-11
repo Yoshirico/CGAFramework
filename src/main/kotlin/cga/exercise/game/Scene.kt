@@ -35,6 +35,7 @@ class Scene(private val window: GameWindow) {
 
     private var ground : Renderable
     private var lightCycle : Renderable?
+    var enemyCycle : Renderable?
 
     private var licht1 : PointLight
     private var licht2 : PointLight
@@ -76,6 +77,15 @@ class Scene(private val window: GameWindow) {
         lightCycle?.scaleLocal(Vector3f(0.8f))
 
 
+        enemyCycle = ModelLoader.loadModel("assets/Light Cycle/Light Cycle/HQ_Movie cycle.obj", Math.toRadians(-90.0f), Math.toRadians(90.0f), 0.0f)
+        if(enemyCycle == null)
+        {
+            exitProcess(1)
+        }
+        enemyCycle?.meshes?.get(2)?.material?.emitColor = Vector3f(1.0f, 0.0f, 0.0f)
+        enemyCycle?.scaleLocal(Vector3f(0.8f))
+
+
         val diffTex = Texture2D("assets/textures/ground_diff.png", true)
         diffTex.setTexParams(GL_REPEAT, GL_REPEAT, GL_NEAREST, GL_NEAREST)
         val emitTex = Texture2D("assets/textures/ground_emit.png", true)
@@ -84,10 +94,10 @@ class Scene(private val window: GameWindow) {
         specTex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
 
         val groundMaterial = Material(diffTex,
-                                    emitTex,
-                                    specTex,
-                            50.0f,
-                                    Vector2f(64.0f, 64.0f)); GLError.checkThrow()
+            emitTex,
+            specTex,
+            50.0f,
+            Vector2f(64.0f, 64.0f)); GLError.checkThrow()
 
 
         //load an object and create a mesh
@@ -118,7 +128,7 @@ class Scene(private val window: GameWindow) {
         licht2 = PointLight(Vector3f(-15.0f, 2.5f, 0.0f), Vector3i(255, 0, 0))
         licht3 = PointLight(Vector3f(0.0f, 2.5f, -15.0f), Vector3i(0, 255, 0))
 
-        }
+    }
 
 
 
@@ -128,11 +138,14 @@ class Scene(private val window: GameWindow) {
         staticShader.use()
         cam.bind(staticShader)
         lightCycle?.render(staticShader)
+        enemyCycle?.render(staticShader)
+
         licht1.bind(staticShader, "point1");
         licht2.bind(staticShader, "point2");
         licht3.bind(staticShader, "point3");
         spotLight.bind(staticShader, "spotLight", Matrix4f())
         pointLight.bind(staticShader, "pointLight")
+
         ground.render(staticShader)
     }
 
