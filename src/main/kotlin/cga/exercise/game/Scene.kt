@@ -82,6 +82,7 @@ class Scene(private val window: GameWindow) {
         }
         enemyCycle?.meshes?.get(2)?.material?.emitColor = Vector3f(1.0f, 0.0f, 0.0f)
         enemyCycle?.scaleLocal(Vector3f(0.5f))
+        enemyCycle?.translateLocal(Vector3f(80.0f, 0.0f, 105.0f))
 
 
         val diffTex = Texture2D("assets/textures/ground_diff.png", true)
@@ -163,19 +164,25 @@ class Scene(private val window: GameWindow) {
         }
 
         if(window.getKeyState(GLFW.GLFW_KEY_A)) {
-            rotationDirection = -1.0f
+            //rotationDirection = -1.0f
+            x?.rotateAroundPoint(0.0f, 1.0f, 0.0f, x!!.getWorldPosition().add(x!!.getXAxis().mul(turningCycleRadius*rotationDirection)))
         }
         else if(window.getKeyState(GLFW.GLFW_KEY_D)) {
-            rotationDirection = 1.0f
+            //rotationDirection = 1.0f
+            x?.rotateAroundPoint(0.0f, -1.0f, 0.0f, x!!.getWorldPosition().add(x!!.getXAxis().mul(turningCycleRadius*rotationDirection)))
         }
+        x?.translateLocal(Vector3f(0.0f, 0.0f, speed * dt))
 
-        if(rotationDirection == 0.0f){
-            x?.translateLocal(Vector3f(0.0f, 0.0f, speed * dt))
-        }
+        /*
+          if(rotationDirection != 0.0f){
+              x?.translateLocal(Vector3f(0.0f, 0.0f, speed * dt))
+          }
+
         else if(speed != 0.0f)
         {
             x?.rotateAroundPoint(0.0f,  (360 * speed)/(2.0f*Math.PI.toFloat() * turningCycleRadius) * rotationDirection * dt, 0.0f, x!!.getWorldPosition().add(x!!.getXAxis().mul(turningCycleRadius*rotationDirection)))
         }
+         */
     }
 
     fun enemyLogic( enemy : Renderable? , dt : Float , player : Renderable? ){
@@ -197,7 +204,6 @@ class Scene(private val window: GameWindow) {
         var yDistance = ly - ey;
 
 
-
         if (xDistance > 0.1f && xDistance != 0f){
             enemy?.translateLocal(Vector3f(2f * dt, 0f, 0f * dt))
         } else if (xDistance < 1f && xDistance != 0f){
@@ -212,23 +218,57 @@ class Scene(private val window: GameWindow) {
             enemy?.translateLocal(Vector3f(0f * dt, 0f, -2f * dt))
         }
 
-        //calculating the angle
-        //val numerator: Float = (lx * ex) + (ly * ey)
-        //val denominator: Float = sqrt(lx * lx + ly * ly) * sqrt(ex * ex + ey * ey)
-        //val angle: Float = acos(numerator / denominator)
-        //println(denominator)
-        //if (denominator < 20f){
-        //    enemyCycle?.rotateAroundPoint(0.0f,  -1.0f, 0.0f, enemyCycle!!.getWorldPosition().add(enemyCycle!!.getXAxis()))
-       // }
+    }
 
+    fun colision(player : Renderable?, enemy : Renderable?):Boolean{
+
+        val playerBox = boxing(player);
+        val enemyBox = boxing(enemy);
+
+        // 0 = Object mitte
+        // 1 = Oben Rechts
+        // 2 = Oben Links
+        // 3 = unten Rechts
+        // 4 = unten Links
+        /*
+        if (playerBox[1].second >= enemyBox[4].second && playerBox[1].first <= enemyBox[4].first){
+            println("colision");
+        }
+         */
+        // Distanzen der Punkte
+        var xDistance = playerBox[0].first - enemyBox[0].first;
+        var yDistance = playerBox[0].second - enemyBox[0].second;
+
+        return !(xDistance >= 0.2f && xDistance <= -0.2f || yDistance >= 0.2f && yDistance <= -0.2f)
+
+    }
+
+    fun boxing(obj : Renderable?): MutableList<Pair<Float,Float>>{
+        val playerX = obj?.getWorldPosition();
+        val playerZ = obj?.getWorldPosition();
+
+        val lx : Float = playerX!!.x;
+        val lz : Float= playerZ!!.z;
+
+        val p0 : Pair<Float,Float> = Pair(lx,lz)
+        val p1 : Pair<Float,Float> = Pair(lx + 1.0f, lz + 1.0f) // oben rechts == Z-MAX
+        val p3 : Pair<Float,Float> = Pair(lx + 1.0f,lz - 1.0f) // unten rechts == X-Max & Z-MIN
+        val p2 : Pair<Float,Float> = Pair(lx - 1.0f,lz + 1.0f) // oben Links
+        val p4 : Pair<Float,Float> = Pair(lx - 1.0f,lz - 1.0f) // unten links == X-MIN
+
+        return  mutableListOf<Pair<Float,Float>>(p0,p1,p2,p3,p4)
     }
 
 
     fun update(dt: Float, t: Float) {
 
+        enemyLogic(enemyCycle, dt , lightCycle);
+
         playerWalking(lightCycle, dt);
 
-        enemyLogic(enemyCycle, dt , lightCycle);
+        if(colision(lightCycle,enemyCycle)){
+            println("Getroffen")
+        }
 
         lightCycle?.meshes?.get(2)?.material?.emitColor = Vector3f((Math.sin(t) + 1.0f)/2, (Math.sin(t*2) + 1.0f)/2, (Math.sin(t*3) + 1.0f)/2)
     }
