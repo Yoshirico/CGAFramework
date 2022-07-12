@@ -82,7 +82,7 @@ class Scene(private val window: GameWindow) {
         }
         enemyCycle?.meshes?.get(2)?.material?.emitColor = Vector3f(1.0f, 0.0f, 0.0f)
         enemyCycle?.scaleLocal(Vector3f(0.5f))
-        enemyCycle?.translateLocal(Vector3f(80.0f, 0.0f, 105.0f))
+        enemyCycle?.translateLocal(Vector3f(0.0f, 0.0f, -15.0f))
 
 
         val diffTex = Texture2D("assets/textures/ground_diff.png", true)
@@ -230,17 +230,36 @@ class Scene(private val window: GameWindow) {
         // 2 = Oben Links
         // 3 = unten Rechts
         // 4 = unten Links
-        /*
-        if (playerBox[1].second >= enemyBox[4].second && playerBox[1].first <= enemyBox[4].first){
-            println("colision");
+
+        var playerA : Float = playerBox[3].first - playerBox[4].first
+        var playerB : Float = playerBox[2].second - playerBox[4].second
+
+        var enemyA : Float = enemyBox[3].first - enemyBox[4].first
+        var enemyB : Float = enemyBox[2].second - enemyBox[4].second
+
+        var b : Boolean = enemyBox[3].first in playerBox[4].first .. playerBox[3].first
+        var a : Boolean = enemyBox[2].second in playerBox[4].second .. playerBox[2].second
+
+        var c : Boolean = enemyBox[1].second in playerBox[4].second .. playerBox[2].second
+        var d : Boolean = enemyBox[4].second in playerBox[4].second .. playerBox[3].second
+
+
+        var b_Strich : Float = playerB - enemyB
+        var a_Strich : Float = playerA - enemyA
+
+/*
+        if (playerBox[1].second > enemyBox[4].second && playerBox[1].first < enemyBox[4].first){
+            println("ALARM");
+            return true
         }
-         */
+ */
+
         // Distanzen der Punkte
-        var xDistance = playerBox[0].first - enemyBox[0].first;
-        var yDistance = playerBox[0].second - enemyBox[0].second;
+        //var xDistance = playerBox[0].first - enemyBox[0].first;
+        //var yDistance = playerBox[0].second - enemyBox[0].second;
 
-        return !(xDistance >= 0.2f && xDistance <= -0.2f || yDistance >= 0.2f && yDistance <= -0.2f)
-
+        //return !(xDistance >= 0.2f && xDistance <= -0.2f || yDistance >= 0.2f && yDistance <= -0.2f)
+        return false
     }
 
     fun boxing(obj : Renderable?): MutableList<Pair<Float,Float>>{
@@ -256,18 +275,22 @@ class Scene(private val window: GameWindow) {
         val p2 : Pair<Float,Float> = Pair(lx - 1.0f,lz + 1.0f) // oben Links
         val p4 : Pair<Float,Float> = Pair(lx - 1.0f,lz - 1.0f) // unten links == X-MIN
 
+
+
+       // println(p1); // <-- mittelpunkt der objekte
+
         return  mutableListOf<Pair<Float,Float>>(p0,p1,p2,p3,p4)
     }
 
 
     fun update(dt: Float, t: Float) {
 
-        enemyLogic(enemyCycle, dt , lightCycle);
+        //enemyLogic(enemyCycle, dt , lightCycle);
 
         playerWalking(lightCycle, dt);
 
         if(colision(lightCycle,enemyCycle)){
-            println("Getroffen")
+            //println("Getroffen")
         }
 
         lightCycle?.meshes?.get(2)?.material?.emitColor = Vector3f((Math.sin(t) + 1.0f)/2, (Math.sin(t*2) + 1.0f)/2, (Math.sin(t*3) + 1.0f)/2)
