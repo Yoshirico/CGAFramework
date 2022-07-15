@@ -39,6 +39,11 @@ open class Transformable : ITransformable {
 
     override fun getWorldPosition(): Vector3f = getWorldModelMatrix().getTranslation(Vector3f())
 
+    fun rotateTHISMTF(x : Float){
+
+        model_matrix
+    }
+
     override fun getXAxis(): Vector3f {
         val worldMatrix = getLocalModelMatrix()
         val xAxis = Vector3f(worldMatrix.m00(), worldMatrix.m01(), worldMatrix.m02())

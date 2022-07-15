@@ -138,8 +138,6 @@ class Scene(private val window: GameWindow) {
         spotLight = SpotLight(Vector3f(0.0f, 0.5f, -0.7f), Vector3i(255, 255, 255), 16.5f, 20.5f)
         spotLight.parent = lightCycle
 
-
-
         pointLight = PointLight(Vector3f(0.0f, 0.0f, 3.0f), Vector3i(255, 255, 255))
         licht1 = PointLight(Vector3f(1.0f, 0.0f, 1.0f), Vector3i(255, 255, 255))
         licht2 = PointLight(Vector3f(-1.0f, 0.0f, 1.0f), Vector3i(255, 255, 255))
@@ -162,7 +160,7 @@ class Scene(private val window: GameWindow) {
         }
 
         while (x != 11){
-            enemys.add(ModelLoader.loadModel("assets/Light Cycle/Light Cycle/HQ_Movie cycle.obj", Math.toRadians(-90.0f), Math.toRadians(90.0f), 0.0f))
+            enemys.add(ModelLoader.loadModel("assets/Light Cycle/Light Cycle/HQ_Movie cycle.obj", Math.toRadians(-90.0f), Math.toRadians(120.0f), 0.0f))
             x += 1
         }
 
@@ -349,11 +347,18 @@ class Scene(private val window: GameWindow) {
             } else {
                 player?.translateLocal(Vector3f(0f, 0.0f, 5f * dt))
             }
-
-
         }
+        var deg = followMe(player,lightCycle).toFloat()
 
-        lightCycle?.rotateAroundPoint(0f,followMe(player,lightCycle).toFloat(),0f,lightCycle!!.getWorldPosition())
+        var curentdeg = -90f
+
+        if (curentdeg < deg){
+            lightCycle?.rotateAroundPoint(0f, -2f,0f ,lightCycle!!.getWorldPosition())
+            curentdeg + 2f
+        } else if (curentdeg > deg){
+            lightCycle?.rotateAroundPoint(0f, 2f,0f ,lightCycle!!.getWorldPosition())
+            curentdeg - 2f
+        }
 
         lightCycle?.meshes?.get(2)?.material?.emitColor = Vector3f((Math.sin(t) + 1.0f)/2, (Math.sin(t*2) + 1.0f)/2, (Math.sin(t*3) + 1.0f)/2)
     }
@@ -364,7 +369,6 @@ class Scene(private val window: GameWindow) {
     var oldMousePosY = 0.0;
 
     fun onMouseMove(xpos: Double, ypos: Double) {
-
         player?.rotateAroundPoint(0.0f , (oldMousePosX - xpos).toFloat() * 0.1f, 0.0f, player!!.getWorldPosition())
         oldMousePosX = xpos
         oldMousePosY = ypos
