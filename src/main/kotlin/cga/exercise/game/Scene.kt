@@ -21,6 +21,7 @@ import org.lwjgl.opengl.GL11.*
 import kotlin.math.acos
 import kotlin.math.sqrt
 import kotlin.system.exitProcess
+import MyArenaDefence.*
 
 
 /**
@@ -42,6 +43,8 @@ class Scene(private val window: GameWindow) {
 
     private var pointLight : PointLight
     private var spotLight : SpotLight
+
+    var player : Renderable?
 
 
     //scene setup
@@ -66,15 +69,15 @@ class Scene(private val window: GameWindow) {
         val attrNorm = VertexAttribute(3, GL_FLOAT, stride, 5 * 4) //normalval
         val vertexAttributes = arrayOf<VertexAttribute>(attrPos, attrTC, attrNorm)
 
-        /*
-        avatar = ModelLoader.loadModel("assets/Light Cycle/Avatar/a.obj", Math.toRadians(-90.0f), Math.toRadians(90.0f), 0.0f)
-        if(avatar == null)
+
+        player = ModelLoader.loadModel("assets/Light Cycle/avatar/Zack.obj", Math.toRadians(0.0f), Math.toRadians(180.0f), 0.0f)
+        if(player == null)
         {
             exitProcess(1)
         }
-        avatar?.meshes?.get(2)?.material?.emitColor = Vector3f(1.0f, 0.0f, 0.0f)
-        avatar?.scaleLocal(Vector3f(0.8f))
-         */
+        player?.meshes?.get(2)?.material?.emitColor = Vector3f(1.0f, 0.0f, 0.0f)
+        player?.scaleLocal(Vector3f(1f))
+        player?.translateLocal(Vector3f(0.0f, 0.0f, -5.0f))
 
 
         lightCycle = ModelLoader.loadModel("assets/Light Cycle/Light Cycle/HQ_Movie cycle.obj", Math.toRadians(-90.0f), Math.toRadians(90.0f), 0.0f)
@@ -125,7 +128,7 @@ class Scene(private val window: GameWindow) {
         cam = TronCamera()
         cam.rotateLocal(-35.0f, 0.0f, 0.0f)
         cam.translateLocal(Vector3f(0.0f,  0.0f, 4.0f))
-        cam.parent = lightCycle!!
+        cam.parent = player!!
 
         // Licht
         spotLight = SpotLight(Vector3f(0.0f, 0.5f, -0.7f), Vector3i(255, 255, 255), 16.5f, 20.5f)
@@ -151,8 +154,10 @@ class Scene(private val window: GameWindow) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
         staticShader.use()
         cam.bind(staticShader)
+
         lightCycle?.render(staticShader)
         enemyCycle?.render(staticShader)
+        player?.render(staticShader)
 
         licht1.bind(staticShader, "point1");
         licht2.bind(staticShader, "point2");
@@ -248,24 +253,24 @@ class Scene(private val window: GameWindow) {
 
             if (distance.first > distance.second){
                 // X
-                if(pz > enemyBox[3] && pz < (enemyBox[3] + 2f)){
+                if(pz > enemyBox[3] && pz < (enemyBox[3] + 1.5f)){
                     //player?.translateLocal(Vector3f(0f, 0f, 2f * dt))
                     println("Gerade Aus")
                     return 2
                 }
-                if (px < enemyBox[0] && px > (enemyBox[0] - 2f)){
+                if (px < enemyBox[0] && px > (enemyBox[0] - 1.5f)){
                     //player?.translateLocal(Vector3f(-2f * dt, 0f, 0f ))
                     println("Rechts")
                     return 2
                 }
             } else {
                 //Z
-                if(pz < enemyBox[1] && pz > (enemyBox[1] - 2f)){
+                if(pz < enemyBox[1] && pz > (enemyBox[1] - 1.5f)){
                     //player?.translateLocal(Vector3f(0f, 0f, -2f * dt ))
                     println("Hinten")
                     return 2
                 }
-                if(px > enemyBox[2] && px < (enemyBox[2] + 2f)){
+                if(px > enemyBox[2] && px < (enemyBox[2] + 1.5f)){
                     //player?.translateLocal(Vector3f(0f, 0f, 20f * dt ))
                     println("Links")
                     return 2
@@ -283,10 +288,10 @@ class Scene(private val window: GameWindow) {
         val lz : Float= player!!.z;
 
 
-        var posX = lx + 2f // 0
-        var posY = lz + 2f // 1
-        var negX = lx - 2f // 2
-        var negY = lz - 2f // 3
+        var posX = lx + 1.5f // 0
+        var posY = lz + 1.5f // 1
+        var negX = lx - 1.5f // 2
+        var negY = lz - 1.5f // 3
 
        // println(p1); // <-- mittelpunkt der objekte
 
@@ -296,12 +301,14 @@ class Scene(private val window: GameWindow) {
 
     fun update(dt: Float, t: Float) {
 
-        //enemyLogic(enemyCycle, dt , lightCycle);
+        enemyLogic(enemyCycle, dt , player);
+        enemyLogic(lightCycle, dt , player);
+        colision(enemyCycle, lightCycle, dt);
 
-        if (colision(lightCycle,enemyCycle,dt) == 0) {
-            playerWalking(lightCycle, dt)
+        if (colision(player,enemyCycle,dt) == 0 && colision(player,lightCycle,dt) == 0) {
+            playerWalking(player, dt)
         } else {
-            lightCycle?.translateLocal(Vector3f(0f, 0.0f, 5f * dt))
+            player?.translateLocal(Vector3f(0f, 0.0f, 5f * dt))
         }
 /*
         if (t.toInt() % 2 == 0){
@@ -323,7 +330,7 @@ class Scene(private val window: GameWindow) {
 
     fun onMouseMove(xpos: Double, ypos: Double) {
 
-        lightCycle?.rotateAroundPoint(0.0f , (oldMousePosX - xpos).toFloat() * 0.1f, 0.0f, lightCycle!!.getWorldPosition())
+        player?.rotateAroundPoint(0.0f , (oldMousePosX - xpos).toFloat() * 0.1f, 0.0f, player!!.getWorldPosition())
         oldMousePosX = xpos
         oldMousePosY = ypos
     }
