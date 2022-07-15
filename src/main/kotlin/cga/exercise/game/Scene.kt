@@ -22,6 +22,7 @@ import kotlin.math.acos
 import kotlin.math.sqrt
 import kotlin.system.exitProcess
 import MyArenaDefence.*
+import kotlin.math.roundToInt
 
 
 /**
@@ -339,6 +340,7 @@ class Scene(private val window: GameWindow) {
         return  mutableListOf<Float>(posX, posY, negX, negY,lx,lz);
     }
 
+    var curentdeg = -90f
     fun update(dt: Float, t: Float) {
 
         for(i in enemys){
@@ -350,18 +352,19 @@ class Scene(private val window: GameWindow) {
         }
         var deg = followMe(player,lightCycle).toFloat()
 
-        var curentdeg = -90f
 
         if (curentdeg < deg){
             lightCycle?.rotateAroundPoint(0f, -2f,0f ,lightCycle!!.getWorldPosition())
-            curentdeg + 2f
+            curentdeg += 2f
         } else if (curentdeg > deg){
             lightCycle?.rotateAroundPoint(0f, 2f,0f ,lightCycle!!.getWorldPosition())
-            curentdeg - 2f
+            curentdeg -= 2f
         }
 
         lightCycle?.meshes?.get(2)?.material?.emitColor = Vector3f((Math.sin(t) + 1.0f)/2, (Math.sin(t*2) + 1.0f)/2, (Math.sin(t*3) + 1.0f)/2)
     }
+
+    fun jetztDrehDichDudummesSchtueckScheisse (){}
 
     fun onKey(key: Int, scancode: Int, action: Int, mode: Int) {}
 
