@@ -171,7 +171,6 @@ class Scene(private val window: GameWindow) {
             i?.translateLocal(Vector3f(p, 0.0f, 20f))
             p += 3f
         }
-
     }
 
 
@@ -274,14 +273,22 @@ class Scene(private val window: GameWindow) {
         }
     }
 
-    fun followMe(player : Renderable? ,enemy: Renderable?): Double{
-        var dist = distanceToSomething(player,enemy)
+    fun followMe(player : Renderable? ,enemy: Renderable?){
+        val dist = distanceToSomething(player,enemy)
 
-        var tan : Double = Math.toDegrees( Math.atan2(dist.second.toDouble(), dist.first.toDouble()) )
+        val tan : Double = Math.toDegrees( Math.atan2(dist.second.toDouble(), dist.first.toDouble()) )
         println(tan)
 
-        return tan
+        if (curentdeg < tan){
+            lightCycle?.rotateAroundPoint(0f, -2f,0f ,lightCycle!!.getWorldPosition())
+            curentdeg += 2f
+        } else if (curentdeg > tan){
+            lightCycle?.rotateAroundPoint(0f, 2f,0f ,lightCycle!!.getWorldPosition())
+            curentdeg -= 2f
+        }
+
     }
+
 
     fun colision(player : Renderable?, enemy : Renderable?, dt : Float): Int{
 
@@ -350,9 +357,10 @@ class Scene(private val window: GameWindow) {
                 player?.translateLocal(Vector3f(0f, 0.0f, 5f * dt))
             }
         }
-        var deg = followMe(player,lightCycle).toFloat()
+        //var deg = followMe(player,lightCycle).toFloat()
+        var deg = 90f
 
-
+/*
         if (curentdeg < deg){
             lightCycle?.rotateAroundPoint(0f, -2f,0f ,lightCycle!!.getWorldPosition())
             curentdeg += 2f
@@ -360,6 +368,7 @@ class Scene(private val window: GameWindow) {
             lightCycle?.rotateAroundPoint(0f, 2f,0f ,lightCycle!!.getWorldPosition())
             curentdeg -= 2f
         }
+ */
 
         lightCycle?.meshes?.get(2)?.material?.emitColor = Vector3f((Math.sin(t) + 1.0f)/2, (Math.sin(t*2) + 1.0f)/2, (Math.sin(t*3) + 1.0f)/2)
     }

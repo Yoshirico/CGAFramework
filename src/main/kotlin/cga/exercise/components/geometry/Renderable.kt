@@ -4,6 +4,7 @@ import cga.exercise.components.shader.ShaderProgram
 
 class Renderable(val meshes : MutableList<Mesh>) : Transformable(), IRenderable{
 
+    var c = -90f
     override fun render(shaderProgram: ShaderProgram) {
 
         meshes.forEach {mesh ->
