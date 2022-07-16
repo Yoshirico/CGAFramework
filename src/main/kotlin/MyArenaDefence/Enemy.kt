@@ -26,16 +26,9 @@ class Enemy(private val objectpath : String, var radY : Float) {
 
     fun returnRadius(): Float = currentRadius
 
-    fun enemyLogic( player : Renderable? , dt : Float, dist : Pair<Float,Float>, deg: Float){
-        /*
-        if (dist.first > 0.1f && dist.first != 0f){
-            enemy?.translateLocal(Vector3f(3f * dt, 0f, 0f * dt))
-        } else if (dist.first < 1f && dist.first != 0f){
-            enemy?.translateLocal(Vector3f(3f * dt, 0f, 0f * dt))
-        }
-         */
+    fun drive(dt : Float, speed : Float) = enemy?.translateLocal(Vector3f(speed * dt, 0f, 0f * dt))
 
-        enemy?.translateLocal(Vector3f(3f * dt, 0f, 0f * dt))
+    fun enemyLogic( player : Renderable? , dt : Float, dist : Pair<Float,Float>, deg: Float){
 
         if (radY < deg){
             enemy?.rotateAroundPoint(0f, -2f,0f ,enemy!!.getWorldPosition())

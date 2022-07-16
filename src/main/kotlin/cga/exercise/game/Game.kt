@@ -9,7 +9,7 @@ class Game(width: Int,
            height: Int,
            fullscreen: Boolean = false,
            vsync: Boolean = false,
-           title: String = "Testgame",
+           title: String = "MyArenaDefence",
            GLVersionMajor: Int = 3,
            GLVersionMinor: Int = 3) : GameWindow(width, height, fullscreen, vsync, GLVersionMajor, GLVersionMinor, title, 4, 120.0f) {
 
@@ -28,5 +28,6 @@ class Game(width: Int,
     override fun onMouseMove(xpos: Double, ypos: Double) = scene.onMouseMove(xpos, ypos)
 
     override fun onKey(key: Int, scancode: Int, action: Int, mode: Int) = scene.onKey(key, scancode, action, mode)
+    
 
 }
