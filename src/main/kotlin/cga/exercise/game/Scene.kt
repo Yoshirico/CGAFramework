@@ -83,9 +83,9 @@ class Scene(private val window: GameWindow) {
 
         val diffTex = Texture2D("assets/textures/test.jpg", true)
         diffTex.setTexParams(GL_REPEAT, GL_REPEAT, GL_NEAREST, GL_NEAREST)
-        val emitTex = Texture2D("assets/textures/test.jpg", true)
+        val emitTex = Texture2D("assets/textures/Group 17.png", true)
         emitTex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
-        val specTex = Texture2D("assets/textures/test.jpg", true)
+        val specTex = Texture2D("assets/textures/Group 17.png", true)
         specTex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
 
         val groundMaterial = Material(diffTex,
