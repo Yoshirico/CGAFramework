@@ -211,25 +211,6 @@ class Scene(private val window: GameWindow) {
         return Pair(xDistance,zDistance)
     }
 
-    fun enemyLogic( enemy : Renderable? , dt : Float , player : Renderable? ){
-
-        val x = distanceToSomething(player,enemy)
-
-        if (x.first > 0.1f && x.first != 0f){
-            enemy?.translateLocal(Vector3f(2f * dt, 0f, 0f * dt))
-        } else if (x.first < 1f && x.first != 0f){
-            enemy?.translateLocal(Vector3f(-2f * dt, 0f, 0f * dt))
-        }
-
-        if (x.second > 0.1f && x.second != 0f) {
-            enemy?.translateLocal(Vector3f(0f * dt, 0f, 2f * dt))
-            //enemyCycle?.rotateAroundPoint(0.0f,  (360 * speed)/(2.0f*Math.PI.toFloat() * turningCycleRadius) * rotationDirection * dt, 0.0f, enemyCycle!!.getWorldPosition().add(enemyCycle!!.getXAxis().mul(turningCycleRadius*rotationDirection)))
-
-        } else if (x.second < 1f && x.second != 0f){
-            enemy?.translateLocal(Vector3f(0f * dt, 0f, -2f * dt))
-        }
-    }
-
     fun followMe(player: Renderable?, enemy: Renderable?): Double {
         val dist = distanceToSomething(player, enemy)
         return Math.toDegrees(Math.atan2(dist.second.toDouble(), dist.first.toDouble()))
@@ -292,7 +273,6 @@ class Scene(private val window: GameWindow) {
         return  mutableListOf<Float>(posX, posY, negX, negY,lx,lz);
     }
 
-    var curentdeg = -90f
     fun update(dt: Float, t: Float) {
 
         for(i in enemys){
@@ -303,10 +283,16 @@ class Scene(private val window: GameWindow) {
             }
         }
 
-        playerWalking(player.player, dt)
+        if (player.health > 0) {
+            playerWalking(player.player, dt)
+        }
 
         for (i in enemys){
             val deg = followMe(player.player,i.enemy).toFloat()
+
+            val x = distanceToSomething(player.player,i.enemy)
+            //enemyLogic(i.enemy, dt, player.player, x )
+            i.enemyLogic(player.player, dt, x)
 
             if (i.radY < deg){
                 i.enemy?.rotateAroundPoint(0f, -2f,0f ,i.enemy!!.getWorldPosition())

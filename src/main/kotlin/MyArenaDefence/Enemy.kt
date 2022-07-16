@@ -10,7 +10,7 @@ class Enemy(private val objectpath : String, var radY : Float) {
 
     var currentRadius = radY
 
-    var damage = 1
+    var damage = 10
     val enemy : Renderable? = ModelLoader.loadModel(objectpath, Math.toRadians(-90.0f), radY, 0.0f)
 
     init {
@@ -25,6 +25,21 @@ class Enemy(private val objectpath : String, var radY : Float) {
     }
 
     fun returnRadius(): Float = currentRadius
+
+    fun enemyLogic( player : Renderable? , dt : Float, dist : Pair<Float,Float>){
+
+        if (dist.first > 0.1f && dist.first != 0f){
+            enemy?.translateLocal(Vector3f(2f * dt, 0f, 0f * dt))
+        } else if (dist.first < 1f && dist.first != 0f){
+            enemy?.translateLocal(Vector3f(-2f * dt, 0f, 0f * dt))
+        }
+
+        if (dist.second > 0.1f && dist.second != 0f) {
+            enemy?.translateLocal(Vector3f(0f * dt, 0f, 2f * dt))
+        } else if (dist.second < 1f && dist.second != 0f){
+            enemy?.translateLocal(Vector3f(0f * dt, 0f, -2f * dt))
+        }
+    }
 
 
 }
