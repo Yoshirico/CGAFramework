@@ -1,5 +1,7 @@
 package cga.exercise.game
 
+import MyArenaDefence.Enemy
+import MyArenaDefence.Player
 import cga.exercise.components.camera.TronCamera
 import cga.exercise.components.geometry.Material
 import cga.exercise.components.geometry.Mesh
@@ -18,11 +20,7 @@ import cga.framework.OBJLoader.OBJResult
 import org.joml.*
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL11.*
-import kotlin.math.acos
-import kotlin.math.sqrt
 import kotlin.system.exitProcess
-import MyArenaDefence.*
-import kotlin.math.roundToInt
 
 
 /**
@@ -35,7 +33,7 @@ class Scene(private val window: GameWindow) {
 
     private var ground : Renderable
     var lightCycle : Renderable?
-    var enemyCycle : Renderable?
+    var enemys = arrayListOf<Enemy>()
 
     private var licht1 : PointLight
     private var licht2 : PointLight
@@ -44,11 +42,11 @@ class Scene(private val window: GameWindow) {
     private var pointLight : PointLight
     private var spotLight : SpotLight
 
-    var player : Renderable?
+    var player : Player
 
     var x = 0
     var p = -2.0f
-    var enemys = arrayListOf<Renderable?>()
+
 
 
 
@@ -74,16 +72,7 @@ class Scene(private val window: GameWindow) {
         val attrNorm = VertexAttribute(3, GL_FLOAT, stride, 5 * 4) //normalval
         val vertexAttributes = arrayOf<VertexAttribute>(attrPos, attrTC, attrNorm)
 
-
-        player = ModelLoader.loadModel("assets/Light Cycle/avatar/Zack.obj", Math.toRadians(0.0f), Math.toRadians(180.0f), 0.0f)
-        if(player == null)
-        {
-            exitProcess(1)
-        }
-        player?.meshes?.get(2)?.material?.emitColor = Vector3f(1.0f, 0.0f, 0.0f)
-        player?.scaleLocal(Vector3f(1f))
-        player?.translateLocal(Vector3f(0.0f, 0.0f, -5.0f))
-
+        player = Player("assets/Light Cycle/avatar/Zack.obj",-85f)
 
         lightCycle = ModelLoader.loadModel("assets/Light Cycle/Light Cycle/HQ_Movie cycle.obj", Math.toRadians(-90.0f), Math.toRadians(90.0f), 0.0f)
         if(lightCycle == null)
@@ -92,17 +81,6 @@ class Scene(private val window: GameWindow) {
         }
         lightCycle?.meshes?.get(2)?.material?.emitColor = Vector3f(1.0f, 0.0f, 0.0f)
         lightCycle?.scaleLocal(Vector3f(0.8f))
-
-
-        enemyCycle = ModelLoader.loadModel("assets/Light Cycle/Light Cycle/HQ_Movie cycle.obj", Math.toRadians(-90.0f), Math.toRadians(90.0f), 0.0f)
-        if(enemyCycle == null)
-        {
-            exitProcess(1)
-        }
-        enemyCycle?.meshes?.get(2)?.material?.emitColor = Vector3f(1.0f, 0.0f, 0.0f)
-        enemyCycle?.scaleLocal(Vector3f(0.5f))
-        enemyCycle?.translateLocal(Vector3f(0.0f, 0.0f, -15.0f))
-
 
         val diffTex = Texture2D("assets/textures/ground_diff.png", true)
         diffTex.setTexParams(GL_REPEAT, GL_REPEAT, GL_NEAREST, GL_NEAREST)
@@ -116,7 +94,6 @@ class Scene(private val window: GameWindow) {
             specTex,
             50.0f,
             Vector2f(64.0f, 64.0f)); GLError.checkThrow()
-
 
         //load an object and create a mesh
         val resGround : OBJResult = OBJLoader.loadOBJ("assets/models/ground.obj")
@@ -133,7 +110,7 @@ class Scene(private val window: GameWindow) {
         cam = TronCamera()
         cam.rotateLocal(-35.0f, 0.0f, 0.0f)
         cam.translateLocal(Vector3f(0.0f,  0.0f, 4.0f))
-        cam.parent = player!!
+        cam.parent = player?.player!!
 
         // Licht
         spotLight = SpotLight(Vector3f(0.0f, 0.5f, -0.7f), Vector3i(255, 255, 255), 16.5f, 20.5f)
@@ -147,28 +124,12 @@ class Scene(private val window: GameWindow) {
         pointLight.parent = lightCycle
 
 
-
-        fun genEnemy(): Renderable?{
-            val gegner = ModelLoader.loadModel("assets/Light Cycle/Light Cycle/HQ_Movie cycle.obj", Math.toRadians(-90.0f), Math.toRadians(90.0f), 0.0f)
-            if(enemyCycle == null)
-            {
-                exitProcess(1)
-            }
-            enemyCycle?.meshes?.get(2)?.material?.emitColor = Vector3f(1.0f, 0.0f, 0.0f)
-            enemyCycle?.scaleLocal(Vector3f(0.5f))
-            enemyCycle?.translateLocal(Vector3f(0.0f, 0.0f, -15.0f))
-            return gegner
-        }
-
         while (x != 11){
-            enemys.add(ModelLoader.loadModel("assets/Light Cycle/Light Cycle/HQ_Movie cycle.obj", Math.toRadians(-90.0f), Math.toRadians(120.0f), 0.0f))
+            enemys.add(Enemy("assets/Light Cycle/Light Cycle/HQ_Movie cycle.obj", 0f))
             x += 1
         }
-
         for(i in enemys){
-            i?.meshes?.get(2)?.material?.emitColor = Vector3f(1.0f, 0.0f, 0.0f)
-            i?.scaleLocal(Vector3f(0.5f))
-            i?.translateLocal(Vector3f(p, 0.0f, 20f))
+            i.enemy?.translateLocal(Vector3f(p, 0.0f, 0f))
             p += 3f
         }
     }
@@ -182,11 +143,10 @@ class Scene(private val window: GameWindow) {
         cam.bind(staticShader)
 
         lightCycle?.render(staticShader)
-        enemyCycle?.render(staticShader)
-        player?.render(staticShader)
+        player.player?.render(staticShader)
 
         for (i in enemys){
-            i?.render(staticShader)
+            i.enemy?.render(staticShader)
         }
 
         licht1.bind(staticShader, "point1");
@@ -248,9 +208,6 @@ class Scene(private val window: GameWindow) {
         var xDistance = px - ex;
         var zDistance = pz - ez;
 
-        val newxDistance = player?.getWorldPosition()!!.x - enemy?.getWorldPosition()!!.x;
-        val newzDistance = player.getWorldPosition().z - enemy.getWorldPosition().y;
-
         return Pair(xDistance,zDistance)
     }
 
@@ -273,22 +230,10 @@ class Scene(private val window: GameWindow) {
         }
     }
 
-    fun followMe(player : Renderable? ,enemy: Renderable?){
-        val dist = distanceToSomething(player,enemy)
-
-        val tan : Double = Math.toDegrees( Math.atan2(dist.second.toDouble(), dist.first.toDouble()) )
-        println(tan)
-
-        if (curentdeg < tan){
-            lightCycle?.rotateAroundPoint(0f, -2f,0f ,lightCycle!!.getWorldPosition())
-            curentdeg += 2f
-        } else if (curentdeg > tan){
-            lightCycle?.rotateAroundPoint(0f, 2f,0f ,lightCycle!!.getWorldPosition())
-            curentdeg -= 2f
-        }
-
+    fun followMe(player: Renderable?, enemy: Renderable?): Double {
+        val dist = distanceToSomething(player, enemy)
+        return Math.toDegrees(Math.atan2(dist.second.toDouble(), dist.first.toDouble()))
     }
-
 
     fun colision(player : Renderable?, enemy : Renderable?, dt : Float): Int{
 
@@ -351,29 +296,33 @@ class Scene(private val window: GameWindow) {
     fun update(dt: Float, t: Float) {
 
         for(i in enemys){
-            if (colision(player,i,dt) == 0) {
-                playerWalking(player, dt/enemys.size)
+            if (colision(player.player,i.enemy,dt) == 0) {
+
             } else {
-                player?.translateLocal(Vector3f(0f, 0.0f, 5f * dt))
+                player.player?.translateLocal(Vector3f(0f, 0.0f, 5f * dt))
             }
         }
-        //var deg = followMe(player,lightCycle).toFloat()
-        var deg = 90f
 
-/*
-        if (curentdeg < deg){
-            lightCycle?.rotateAroundPoint(0f, -2f,0f ,lightCycle!!.getWorldPosition())
-            curentdeg += 2f
-        } else if (curentdeg > deg){
-            lightCycle?.rotateAroundPoint(0f, 2f,0f ,lightCycle!!.getWorldPosition())
-            curentdeg -= 2f
+        playerWalking(player.player, dt)
+
+        for (i in enemys){
+            val deg = followMe(player.player,i.enemy).toFloat()
+
+            if (i.radY < deg){
+                i.enemy?.rotateAroundPoint(0f, -2f,0f ,i.enemy!!.getWorldPosition())
+                i.radY += 2f
+            } else if (i.radY >= deg){
+                i.enemy?.rotateAroundPoint(0f, 2f,0f ,i.enemy!!.getWorldPosition())
+                i.radY -= 2f
+            }
+
+            if (colision(player.player,i.enemy, dt) != 0){
+                player.takeDamage(i.damage)
+                println(player.health)
+            }
+
         }
- */
-
-        lightCycle?.meshes?.get(2)?.material?.emitColor = Vector3f((Math.sin(t) + 1.0f)/2, (Math.sin(t*2) + 1.0f)/2, (Math.sin(t*3) + 1.0f)/2)
     }
-
-    fun jetztDrehDichDudummesSchtueckScheisse (){}
 
     fun onKey(key: Int, scancode: Int, action: Int, mode: Int) {}
 
@@ -381,7 +330,7 @@ class Scene(private val window: GameWindow) {
     var oldMousePosY = 0.0;
 
     fun onMouseMove(xpos: Double, ypos: Double) {
-        player?.rotateAroundPoint(0.0f , (oldMousePosX - xpos).toFloat() * 0.1f, 0.0f, player!!.getWorldPosition())
+        player?.player?.rotateAroundPoint(0.0f , (oldMousePosX - xpos).toFloat() * 0.1f, 0.0f, player?.player!!.getWorldPosition())
         oldMousePosX = xpos
         oldMousePosY = ypos
     }
