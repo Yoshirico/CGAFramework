@@ -289,22 +289,12 @@ class Scene(private val window: GameWindow) {
 
         for (i in enemys){
             val deg = followMe(player.player,i.enemy).toFloat()
-
             val x = distanceToSomething(player.player,i.enemy)
-            //enemyLogic(i.enemy, dt, player.player, x )
-            i.enemyLogic(player.player, dt, x)
 
-            if (i.radY < deg){
-                i.enemy?.rotateAroundPoint(0f, -2f,0f ,i.enemy!!.getWorldPosition())
-                i.radY += 2f
-            } else if (i.radY >= deg){
-                i.enemy?.rotateAroundPoint(0f, 2f,0f ,i.enemy!!.getWorldPosition())
-                i.radY -= 2f
-            }
+            i.enemyLogic(player.player, dt, x, deg)
 
             if (colision(player.player,i.enemy, dt) != 0){
                 player.takeDamage(i.damage)
-                println(player.health)
             }
 
         }
