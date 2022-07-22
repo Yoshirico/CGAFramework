@@ -20,6 +20,7 @@ import cga.framework.OBJLoader.OBJResult
 import org.joml.*
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL11.*
+import kotlin.math.pow
 import kotlin.system.exitProcess
 
 
@@ -28,6 +29,7 @@ import kotlin.system.exitProcess
  */
 class Scene(private val window: GameWindow) {
     private val staticShader: ShaderProgram
+    private val enemyOn : Boolean = false
 
     private val cam : TronCamera
 
@@ -44,9 +46,12 @@ class Scene(private val window: GameWindow) {
 
     var player : Player
 
-    var anzahlGegner = 2
-    var p = -2.0f
+    var anzahlGegner = 3
+    var p = -15.0f
 
+    private var jumpSpeed = 0f
+    private var jumpDirection = false // False = going up, True = going down
+    private var canJump = true
 
     //scene setup
     init {
@@ -109,7 +114,7 @@ class Scene(private val window: GameWindow) {
         cam = TronCamera()
         cam.rotateLocal(-35.0f, 0.0f, 0.0f)
         cam.translateLocal(Vector3f(0.0f,  0.0f, 4.0f))
-        cam.parent = player?.player!!
+        cam.parent = player.player!!
 
         // Licht
         spotLight = SpotLight(Vector3f(0.0f, 0.5f, -0.7f), Vector3i(255, 255, 255), 16.5f, 20.5f)
@@ -122,9 +127,10 @@ class Scene(private val window: GameWindow) {
 
         pointLight.parent = `shop-bike`
 
-
+        //fun placeEnemys
         while (anzahlGegner > 0){
             enemys.add(Enemy("assets/Light Cycle/Light Cycle/HQ_Movie cycle.obj", 0f))
+
             anzahlGegner -= 1
         }
         for(i in enemys){
@@ -142,9 +148,7 @@ class Scene(private val window: GameWindow) {
         `shop-bike`?.render(staticShader)
         player.player?.render(staticShader)
 
-        for (i in enemys){
-            i.enemy?.render(staticShader)
-        }
+
 
         licht1.bind(staticShader, "point1");
         licht2.bind(staticShader, "point2");
@@ -153,6 +157,11 @@ class Scene(private val window: GameWindow) {
         pointLight.bind(staticShader, "pointLight")
 
         ground.render(staticShader)
+
+        for (i in enemys){
+            i.enemy?.render(staticShader)
+        }
+
     }
 
     fun distanceToSomething(player : Renderable? , enemy : Renderable?): Pair<Float,Float>{
@@ -252,34 +261,88 @@ class Scene(private val window: GameWindow) {
         obj.drive(dt, 2f)
     }
 
+
+    fun checkCollisionWithMap(): Boolean{
+        if (player.player!!.getWorldPosition().y <= 0){
+            return true
+        }
+        return false
+    }
+
+    fun ich_hab_langsam_keine_ahnung_mehr_wie_ich_die_ganzen_funktionen_nennen_soll( ich_brauch_ne_variable : Pair<Float,Float>): Float{
+        val berechnungDiesachenBerechnet = Math.sqrt(ich_brauch_ne_variable.first*ich_brauch_ne_variable.first + ich_brauch_ne_variable.second*ich_brauch_ne_variable.second)
+        return berechnungDiesachenBerechnet
+    }
     var timebefore = 0
     fun update(dt: Float, t: Float) {
 
-      //  if (player.health > 0) { }
-        player.playerWalking(player.player, dt, window)
+        player.playerWalking(player.player, dt, window, cam)
 
-        if(timebefore != t.toInt()){
-            println(t.toInt())
-            timebefore += 1
+        // Player is on the ground
+        if (checkCollisionWithMap()) {
+            jumpSpeed = 0f
+            canJump = true
+            jumpDirection = false
         }
 
-        for (i in enemys){
-            val deg = followMe(player.player,i.enemy).toFloat()
-            val x = distanceToSomething(player.player,i.enemy)
+        // Player is on the ground and presses space
+        if (window.getKeyState(GLFW.GLFW_KEY_SPACE) && canJump) {
+            canJump = false
+            jumpSpeed = 1.2f // war -0.015
+            player.player!!.setPosition(player.player!!.getWorldPosition().x, 0.1f, player.player!!.getWorldPosition().z)
+        }
 
-            i.enemyLogic(
-                player.player,
-                dt,
-                x,
-                deg
-            )
-            // wenn es sich kollidiert soll es für 3 sec nach hinten fahren, t ist die zeit in secunden
-            i.drive(dt, 5f)
+        // Player is airborne
+        if (!canJump) {
 
-            if (colision(player.player,i.enemy, dt)){
-                player.takeDamage(i.damage)
+            if (jumpDirection){
+                jumpSpeed += 1f * 0.005f
+                println(jumpSpeed)
+            } else {
+                jumpSpeed -= 1f * 0.005f
+                println(jumpSpeed)
+            }
+
+            // Calculate jumping vector
+            val jumpingVector = player.player!!.getWorldPosition().y * jumpSpeed
+
+            val oldCharacterPosition = player.player!!.getWorldPosition()
+            val newCharacterPosition = oldCharacterPosition
+            newCharacterPosition.y = jumpingVector
+
+            player.player!!.setPosition(newCharacterPosition.x, newCharacterPosition.y, newCharacterPosition.z)
+
+            if (jumpSpeed < 0.02) {
+                jumpDirection = true
+                player.player!!.setPosition(player.player!!.getWorldPosition().x, 0.0f, player.player!!.getWorldPosition().z)
             }
         }
+
+
+        if (enemyOn){
+            for (i in enemys) {
+                val deg = followMe(player.player, i.enemy).toFloat()
+                val x = distanceToSomething(player.player, i.enemy)
+
+                i.enemyLogic(
+                    player.player,
+                    dt,
+                    x,
+                    deg
+                )
+
+                i.drive(dt, 5f)
+
+                if (ich_hab_langsam_keine_ahnung_mehr_wie_ich_die_ganzen_funktionen_nennen_soll(distanceToSomething(player.player, i.enemy)) < 5f ){
+                    if (colision(player.player, i.enemy, dt)) {
+                        player.takeDamage(i.damage)
+                    }
+                }
+
+
+            }
+        }
+
     }
 
     fun onKey(key: Int, scancode: Int, action: Int, mode: Int) {}
@@ -288,11 +351,10 @@ class Scene(private val window: GameWindow) {
     var oldMousePosY = 0.0;
 
     fun onMouseMove(xpos: Double, ypos: Double) {
-        player?.player?.rotateAroundPoint(0.0f , (oldMousePosX - xpos).toFloat() * 0.1f, 0.0f, player?.player!!.getWorldPosition())
+        player?.player?.rotateAroundPoint(0f , (oldMousePosX - xpos).toFloat() * 0.1f, 0.0f, player?.player!!.getWorldPosition())
         oldMousePosX = xpos
         oldMousePosY = ypos
     }
-
 
     fun cleanup() {}
 }

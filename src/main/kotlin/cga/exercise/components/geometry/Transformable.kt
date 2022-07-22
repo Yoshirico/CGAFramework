@@ -11,6 +11,10 @@ open class Transformable : ITransformable {
 
     var parent : Transformable? = null
 
+    fun setPosition(x: Float, y: Float, z: Float) {
+        model_matrix.setTranslation(x,y,z)
+    }
+
     override fun rotateLocal(pitch: Float, yaw: Float, roll: Float) {
         model_matrix.rotateXYZ(Math.toRadians(pitch), Math.toRadians(yaw), Math.toRadians(roll))
     }
@@ -40,7 +44,6 @@ open class Transformable : ITransformable {
     override fun getWorldPosition(): Vector3f = getWorldModelMatrix().getTranslation(Vector3f())
 
     fun rotateTHISMTF(x : Float){
-
         model_matrix
     }
 
