@@ -19,7 +19,7 @@ class Enemy(private val objectpath : String, var radY : Float) {
             exitProcess(1)
         }
 
-        enemy.meshes[2].material.emitColor = Vector3f(1.0f, 0.0f, 0.0f)
+        //enemy.meshes[2].material.emitColor = Vector3f(1.0f, 0.0f, 0.0f)
         enemy.scaleLocal(Vector3f(0.5f))
         enemy.translateLocal(Vector3f(0.0f, 0.0f, -15.0f))
     }

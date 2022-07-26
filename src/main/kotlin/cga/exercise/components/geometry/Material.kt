@@ -11,11 +11,11 @@ class Material(var diff: Texture2D,
                var emit: Texture2D,
                var specular: Texture2D,
                var shininess: Float = 60.0f,
-               var tcMultiplier : Vector2f = Vector2f(1.0f)){
+               var tcMultiplier : Vector2f = Vector2f(1.0f)) : IMaterial {
 
     var emitColor = Vector3f(1f)
 
-    fun bind(shaderProgram: ShaderProgram) {
+    override fun bind(shaderProgram: ShaderProgram) {
         // todo 3.2
         shaderProgram.use()
         shaderProgram.setUniform("tcMultiplier", tcMultiplier)
@@ -27,6 +27,10 @@ class Material(var diff: Texture2D,
         shaderProgram.setUniform("diffTex", 2)
         shaderProgram.setUniform("shininess", shininess)
         shaderProgram.setUniform("emitColor", emitColor)
+    }
+
+    override fun cleanup() {
+        TODO("Not yet implemented")
     }
 
     fun unbind()

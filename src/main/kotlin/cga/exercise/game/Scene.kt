@@ -4,7 +4,7 @@ import MyArenaDefence.Enemy
 import MyArenaDefence.Player
 import cga.exercise.components.camera.TronCamera
 import cga.exercise.components.geometry.Material
-import cga.exercise.components.geometry.Mesh
+import cga.exercise.components.geometry.*
 import cga.exercise.components.geometry.Renderable
 import cga.exercise.components.geometry.VertexAttribute
 import cga.exercise.components.light.PointLight
@@ -82,7 +82,7 @@ class Scene(private val window: GameWindow) {
         {
             exitProcess(1)
         }
-        `shop-bike`?.meshes?.get(2)?.material?.emitColor = Vector3f(1.0f, 0.0f, 0.0f)
+        //`shop-bike`?.meshes?.get(2)?.material?.emitColor = Vector3f(1.0f, 0.0f, 0.0f)
         `shop-bike`?.scaleLocal(Vector3f(0.8f))
         `shop-bike`?.translateGlobal(Vector3f(20f , 0f, 20f ))
 
@@ -103,12 +103,12 @@ class Scene(private val window: GameWindow) {
         val resGround : OBJResult = OBJLoader.loadOBJ("assets/models/ground.obj")
         //Get the first mesh of the first object
         val groundMesh: OBJMesh = resGround.objects[0].meshes[0]
-        val meshGround = Mesh(groundMesh.vertexData, groundMesh.indexData, vertexAttributes, groundMaterial)
+        val meshGround = Mesh(groundMesh.vertexData, groundMesh.indexData, vertexAttributes,groundMaterial) //groundMaterial
 
 
         // boden = grün
         ground = Renderable(mutableListOf(meshGround))
-        ground.meshes[0].material.emitColor = Vector3f(0f, 1f, 0f)
+        //ground.meshes[0].material.emitColor = Vector3f(0f, 1f, 0f)
 
         // cam
         cam = TronCamera()
@@ -137,6 +137,9 @@ class Scene(private val window: GameWindow) {
             i.enemy?.translateLocal(Vector3f(p, 0.0f, 0f))
             p += 5f
         }
+
+
+
     }
 
     fun render(dt: Float, t: Float) {
@@ -147,7 +150,6 @@ class Scene(private val window: GameWindow) {
 
         `shop-bike`?.render(staticShader)
         player.player?.render(staticShader)
-
 
 
         licht1.bind(staticShader, "point1");
@@ -338,11 +340,8 @@ class Scene(private val window: GameWindow) {
                         player.takeDamage(i.damage)
                     }
                 }
-
-
             }
         }
-
     }
 
     fun onKey(key: Int, scancode: Int, action: Int, mode: Int) {}

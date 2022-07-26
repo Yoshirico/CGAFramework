@@ -14,7 +14,13 @@ import org.lwjgl.opengl.*
  *
  * Created by Fabian on 16.09.2017.
  */
-class Mesh(vertexdata: FloatArray, indexdata: IntArray, attributes: Array<VertexAttribute>, val material: Material) {
+
+interface IMaterial {
+    fun bind(shaderProgram: ShaderProgram)
+
+    fun cleanup()
+}
+class Mesh(vertexdata: FloatArray, indexdata: IntArray, attributes: Array<VertexAttribute>, val material: IMaterial?) {
     //private data
     private var vao = 0
     private var vbo = 0
@@ -22,64 +28,44 @@ class Mesh(vertexdata: FloatArray, indexdata: IntArray, attributes: Array<Vertex
     private var indexcount = 0
 
     init {
-        // todo: place your code here
+
         indexcount = indexdata.size
 
-        // todo: generate IDs
-        vao = GL30.glGenVertexArrays()
+        vao = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(vao);
 
-        ibo = GL15.glGenBuffers()
-        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, ibo)
+        vbo = GL30.glGenBuffers()
+        GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbo)
+        GL30.glBufferData(GL30.GL_ARRAY_BUFFER, vertexdata, GL30.GL_STATIC_DRAW)
 
-        val indexBuffer = BufferUtils.createIntBuffer(indexcount)
-        indexBuffer.put(indexdata)
-        indexBuffer.flip()
-        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indexBuffer, GL15.GL_STATIC_DRAW)
+        ibo = GL30.glGenBuffers()
+        GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, ibo)
+        GL30.glBufferData(GL30.GL_ELEMENT_ARRAY_BUFFER, indexdata, GL30.GL_STATIC_DRAW)
 
-        vbo = GL15.glGenBuffers()
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo)
-        val vertexBuffer = BufferUtils.createFloatBuffer(vertexdata.size)
-        vertexBuffer.put(vertexdata)
-        vertexBuffer.flip()
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertexBuffer, GL15.GL_STATIC_DRAW)
-        for (i : Int  in 0..attributes.size-1)
-        {
-            GL20.glVertexAttribPointer(i, attributes[i].n, attributes[i].type, false, attributes[i].stride, attributes[i].offset.toLong())
-            GL20.glEnableVertexAttribArray(i)
+        for(i in 0 until attributes.size){
+            GL30.glEnableVertexAttribArray(i);
+            GL30.glVertexAttribPointer(i, attributes.size, attributes[i].type, false, attributes[i].stride, attributes[i].offset.toLong())
         }
 
-        // todo: bind your objects
+        GL30.glBindVertexArray(0);
+        GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0);
+        GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, 0);
 
-        // todo: upload your mesh data
-        GL30.glBindVertexArray(0)
     }
 
-    /**
-     * renders the mesh
-     */
     fun render() {
-        // todo: place your code here
-        // call the rendering method every frame
-
         GL30.glBindVertexArray(vao)
         GL11.glDrawElements(GL11.GL_TRIANGLES, indexcount, GL11.GL_UNSIGNED_INT, 0)
         GL30.glBindVertexArray(0)
 
     }
 
-    /**
-     * renders the mesh
-     */
     fun render(shaderProgram : ShaderProgram) {
-        material.bind(shaderProgram)
+        shaderProgram.use()
+        material?.bind(shaderProgram)
         render()
-        material.unbind()
     }
 
-    /**
-     * Deletes the previously allocated OpenGL objects for this mesh
-     */
     fun cleanup() {
         if (ibo != 0) GL15.glDeleteBuffers(ibo)
         if (vbo != 0) GL15.glDeleteBuffers(vbo)

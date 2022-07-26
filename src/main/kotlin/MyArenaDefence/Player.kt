@@ -23,7 +23,7 @@ class Player(private val objectpath : String, var radY : Float) {
             exitProcess(1)
         }
 
-        player.meshes[2].material.emitColor = Vector3f(1.0f, 0.0f, 0.0f)
+       // player.meshes[2].material.emitColor = Vector3f(1.0f, 0.0f, 0.0f)
         player.scaleLocal(Vector3f(1f))
         player.translateLocal(Vector3f(0.0f, 0.0f, -5.0f))
     }

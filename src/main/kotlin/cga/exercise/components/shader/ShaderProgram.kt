@@ -32,14 +32,6 @@ class ShaderProgram(vertexShaderPath: String, fragmentShaderPath: String) {
         GL20.glDeleteProgram(programID)
     }
 
-    //setUniform() functions are added later during the course
-    // float vector uniforms
-    /**
-     * Sets a single float uniform
-     * @param name  Name of the uniform variable in the shader
-     * @param value Value
-     * @return returns false if the uniform was not found in the shader
-     */
     fun setUniform(name: String, value: Float): Boolean {
         if (programID == 0) return false
         val loc = GL20.glGetUniformLocation(programID, name)
@@ -49,12 +41,7 @@ class ShaderProgram(vertexShaderPath: String, fragmentShaderPath: String) {
         }
         return false
     }
-    /**
-     * Sets a single vec2f uniform
-     * @param name  Name of the uniform variable in the shader
-     * @param value Value
-     * @return returns false if the uniform was not found in the shader
-     */
+
     fun setUniform(name: String, value: Vector2f): Boolean {
         if (programID == 0) return false
         val loc = GL20.glGetUniformLocation(programID, name)
@@ -65,12 +52,6 @@ class ShaderProgram(vertexShaderPath: String, fragmentShaderPath: String) {
         return false
     }
 
-    /**
-     * Sets a single vec3f uniform
-     * @param name  Name of the uniform variable in the shader
-     * @param value Value
-     * @return returns false if the uniform was not found in the shader
-     */
     fun setUniform(name: String, value: Vector3f): Boolean {
         if (programID == 0) return false
         val loc = GL20.glGetUniformLocation(programID, name)
@@ -81,12 +62,6 @@ class ShaderProgram(vertexShaderPath: String, fragmentShaderPath: String) {
         return false
     }
 
-    /**
-     * Sets a single vec3i uniform
-     * @param name  Name of the uniform variable in the shader
-     * @param value Value
-     * @return returns false if the uniform was not found in the shader
-     */
     fun setUniform(name: String, value: Vector3i): Boolean {
         if (programID == 0) return false
         val loc = GL20.glGetUniformLocation(programID, name)
@@ -97,13 +72,6 @@ class ShaderProgram(vertexShaderPath: String, fragmentShaderPath: String) {
         return false
     }
 
-
-    /**
-     * Sets a single int uniform
-     * @param name  Name of the uniform variable in the shader
-     * @param value Value
-     * @return returns false if the uniform was not found in the shader
-     */
     fun setUniform(name: String, value: Int): Boolean {
         if (programID == 0) return false
         val loc = GL20.glGetUniformLocation(programID, name)
@@ -114,12 +82,6 @@ class ShaderProgram(vertexShaderPath: String, fragmentShaderPath: String) {
         return false
     }
 
-    /**
-     * Sets a single Matrixf4 uniform
-     * @param name  Name of the uniform variable in the shader
-     * @param value Value
-     * @return returns false if the uniform was not found in the shader
-     */
     fun setUniform(name: String, value: Matrix4f): Boolean {
         if (programID == 0) return false
         val loc = GL20.glGetUniformLocation(programID, name)
@@ -133,12 +95,20 @@ class ShaderProgram(vertexShaderPath: String, fragmentShaderPath: String) {
         return false
     }
 
-    /**
-     * Creates a shader object from vertex and fragment shader paths
-     * @param vertexShaderPath      vertex shader path
-     * @param fragmentShaderPath    fragment shader path
-     * @throws Exception if shader compilation failed, an exception is thrown
-     */
+    fun setUniform(name: String, value: Matrix4f, transpose: Boolean) : Boolean{
+        if (programID == 0) return false
+        val loc = GL20.glGetUniformLocation(programID, name)
+        if (loc != -1) {
+            var matFloatArray = FloatArray(16)
+            matFloatArray = value.get(matFloatArray)
+
+            GL20.glUniformMatrix4fv(loc,transpose,matFloatArray)
+            return true
+        }
+        return false
+    }
+
+
     init {
         val vPath = Paths.get(vertexShaderPath)
         val fPath = Paths.get(fragmentShaderPath)
