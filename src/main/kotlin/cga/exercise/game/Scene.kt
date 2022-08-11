@@ -34,6 +34,7 @@ class Scene(private val window: GameWindow) {
     private val cam : TronCamera
 
     private var ground : Renderable
+    private var arena : Renderable
     var `shop-bike` : Renderable?
     var enemys = arrayListOf<Enemy>()
 
@@ -45,7 +46,6 @@ class Scene(private val window: GameWindow) {
     private var spotLight : SpotLight
 
     var player : Player
-
     var anzahlGegner = 3
     var p = -15.0f
 
@@ -77,6 +77,8 @@ class Scene(private val window: GameWindow) {
 
         player = Player("assets/Light Cycle/avatar/Zack.obj",-85f)
 
+
+
         `shop-bike` = ModelLoader.loadModel("assets/Light Cycle/Light Cycle/HQ_Movie cycle.obj", Math.toRadians(-90.0f), Math.toRadians(90.0f), 0.0f)
         if(`shop-bike` == null)
         {
@@ -86,18 +88,37 @@ class Scene(private val window: GameWindow) {
         `shop-bike`?.scaleLocal(Vector3f(0.8f))
         `shop-bike`?.translateGlobal(Vector3f(20f , 0f, 20f ))
 
-        val diffTex = Texture2D("assets/textures/test.jpg", true)
+        //Arena
+        val diff1Tex = Texture2D("assets/textures/arena_diff.png", true)
+        diff1Tex.setTexParams(GL_REPEAT, GL_REPEAT, GL_NEAREST, GL_NEAREST)
+        val emit1Tex = Texture2D("assets/textures/arena_emit.png", true)
+        emit1Tex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+        val spec1Tex = Texture2D("assets/textures/arena_spec.png", true)
+        spec1Tex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+
+        val arenaMaterial = Material(diff1Tex,emit1Tex,spec1Tex,50.0f,Vector2f(10.0f, 10.0f)); GLError.checkThrow()
+
+        //load an object and create a mesh
+        val resArena : OBJResult = OBJLoader.loadOBJ("assets/arena/arena_v1.obj")
+        //Get the first mesh of the first object
+        val arenaMesh: OBJMesh = resArena.objects[0].meshes[0]
+        val meshArena = Mesh(arenaMesh.vertexData, arenaMesh.indexData, vertexAttributes,arenaMaterial) //arenaMaterial
+
+        arena = Renderable(mutableListOf(meshArena))
+
+        //Boden
+        val diffTex = Texture2D("assets/textures/Stone_Floor_diff.png", true)
         diffTex.setTexParams(GL_REPEAT, GL_REPEAT, GL_NEAREST, GL_NEAREST)
-        val emitTex = Texture2D("assets/textures/Group 17.png", true)
+        val emitTex = Texture2D("assets/textures/Stone_Floor_emit.png", true)
         emitTex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
-        val specTex = Texture2D("assets/textures/Group 17.png", true)
+        val specTex = Texture2D("assets/textures/Stone_Floor_spec.png", true)
         specTex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
 
         val groundMaterial = Material(diffTex,
             emitTex,
             specTex,
             50.0f,
-            Vector2f(64.0f, 64.0f)); GLError.checkThrow()
+            Vector2f(10.0f, 10.0f)); GLError.checkThrow()
 
         //load an object and create a mesh
         val resGround : OBJResult = OBJLoader.loadOBJ("assets/models/ground.obj")
@@ -150,7 +171,7 @@ class Scene(private val window: GameWindow) {
 
         `shop-bike`?.render(staticShader)
         player.player?.render(staticShader)
-
+        arena.render(staticShader)
 
         licht1.bind(staticShader, "point1");
         licht2.bind(staticShader, "point2");
