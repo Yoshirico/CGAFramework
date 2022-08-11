@@ -96,7 +96,7 @@ class Scene(private val window: GameWindow) {
         val spec1Tex = Texture2D("assets/textures/arena_spec.png", true)
         spec1Tex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
 
-        val arenaMaterial = Material(diff1Tex,emit1Tex,spec1Tex,50.0f,Vector2f(10.0f, 10.0f)); GLError.checkThrow()
+        val arenaMaterial = Material(diff1Tex,emit1Tex,spec1Tex,50.0f,Vector2f(1.0f, 1.0f)); GLError.checkThrow()
 
         //load an object and create a mesh
         val resArena : OBJResult = OBJLoader.loadOBJ("assets/arena/arena_v1.obj")
