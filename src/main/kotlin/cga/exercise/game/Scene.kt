@@ -35,7 +35,9 @@ class Scene(private val window: GameWindow) {
 
     private var ground : Renderable
     private var arena : Renderable
+    private var leben1 : Renderable
     var `shop-bike` : Renderable?
+
     var enemys = arrayListOf<Enemy>()
 
     private var licht1 : PointLight
@@ -77,7 +79,35 @@ class Scene(private val window: GameWindow) {
 
         player = Player("assets/Light Cycle/avatar/Zack.obj",-85f)
 
+        /*leben1 = ModelLoader.loadModel("assets/life/heartObj.obj", Math.toRadians(-30.0f), Math.toRadians(0.0f), 0.0f)
+        if(leben1 == null)
+        {
+            exitProcess(1)
+        }
+        //`shop-bike`?.meshes?.get(2)?.material?.emitColor = Vector3f(1.0f, 0.0f, 0.0f)
+        leben1?.scaleLocal(Vector3f(0.2f))
+        leben1?.translateGlobal(Vector3f(-4f , 2.3f, 0f ))
+*/
+        //leben
+        val diff2Tex = Texture2D("assets/textures/Group 17.png", true)
+        diff2Tex.setTexParams(GL_REPEAT, GL_REPEAT, GL_NEAREST, GL_NEAREST)
+        val emit2Tex = Texture2D("assets/textures/Group 18.png", true)
+        emit2Tex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+        val spec2Tex = Texture2D("assets/textures/Group 18.png", true)
+        spec2Tex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
 
+        val leben1Material = Material(diff2Tex,emit2Tex,spec2Tex,50.0f,Vector2f(1.0f, 1.0f)); GLError.checkThrow()
+
+        //load an object and create a mesh
+        val resLeben1 : OBJResult = OBJLoader.loadOBJ("assets/life/heartObj.obj")
+        //Get the first mesh of the first object
+        val leben1Mesh: OBJMesh = resLeben1.objects[0].meshes[0]
+        val meshLeben1 = Mesh(leben1Mesh.vertexData, leben1Mesh.indexData, vertexAttributes,leben1Material) //arenaMaterial
+
+        leben1 = Renderable(mutableListOf(meshLeben1))
+        leben1.scaleLocal(Vector3f(0.1f))
+        leben1.translateGlobal(Vector3f(0f , 2f, 0f ))
+        leben1.rotateLocal(0f,0f,0f)
 
         `shop-bike` = ModelLoader.loadModel("assets/Light Cycle/Light Cycle/HQ_Movie cycle.obj", Math.toRadians(-90.0f), Math.toRadians(90.0f), 0.0f)
         if(`shop-bike` == null)
@@ -136,6 +166,7 @@ class Scene(private val window: GameWindow) {
         cam.rotateLocal(-35.0f, 0.0f, 0.0f)
         cam.translateLocal(Vector3f(0.0f,  0.0f, 4.0f))
         cam.parent = player.player!!
+        leben1!!.parent = player.player!!
 
         // Licht
         spotLight = SpotLight(Vector3f(0.0f, 0.5f, -0.7f), Vector3i(255, 255, 255), 16.5f, 20.5f)
@@ -172,6 +203,7 @@ class Scene(private val window: GameWindow) {
         `shop-bike`?.render(staticShader)
         player.player?.render(staticShader)
         arena.render(staticShader)
+        leben1?.render(staticShader)
 
         licht1.bind(staticShader, "point1");
         licht2.bind(staticShader, "point2");
@@ -300,6 +332,10 @@ class Scene(private val window: GameWindow) {
     fun update(dt: Float, t: Float) {
 
         player.playerWalking(player.player, dt, window, cam)
+
+        if (window.getKeyState(GLFW.GLFW_KEY_C)){
+            leben1?.translateLocal(Vector3f(0f,20f,0f))
+        }
 
         // Player is on the ground
         if (checkCollisionWithMap()) {
