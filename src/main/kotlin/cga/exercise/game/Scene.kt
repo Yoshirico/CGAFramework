@@ -201,16 +201,17 @@ class Scene(private val window: GameWindow) {
         cam = TronCamera()
         cam.rotateLocal(-35.0f, 0.0f, 0.0f)
         cam.translateLocal(Vector3f(0.0f,  0.0f, 4.0f))
-        cam.parent = player.player!!
-        leben1!!.parent = player.player!!
+        cam.parent = player.player
+        leben1.parent = player.player
 
         // Licht
-        spotLight = SpotLight(Vector3f(0.0f, 0.5f, -0.7f), Vector3i(255, 255, 255), 16.5f, 20.5f)
-        pointLight = PointLight(Vector3f(0.0f, 0.0f, 3.0f), Vector3i(255, 255, 255))
-        licht1 = PointLight(Vector3f(0.0f, 50.0f, 0.0f), Vector3i(255, 255, 255))
-        licht2 = PointLight(Vector3f(-1.0f, 0.0f, 1.0f), Vector3i(255, 255, 255))
-        licht3 = PointLight(Vector3f(1.0f, 2000.5f, -1.0f), Vector3i(255, 255, 255))
+        spotLight = SpotLight(Vector3f(5.0f, 1.0f, 1.0f), Vector3i(255, 255, 255), 16.5f, 20.5f)
+        pointLight = PointLight(Vector3f(0.0f, 1.5f, 0.0f), Vector3i(0, 0, 255))
+        licht1 = PointLight(Vector3f(2.0f, 0.0f, 1.0f), Vector3i(255, 255, 255))
+        licht2 = PointLight(Vector3f(3.0f, 0.0f, 1.0f), Vector3i(255, 255, 255))
+        licht3 = PointLight(Vector3f(4.0f, 0.0f, 1.0f), Vector3i(255, 255, 255))
 
+        pointLight.parent =player.player
         //fun placeEnemys
         while (anzahlGegner > 0){
             enemys.add(Enemy("assets/enemy/enemy.obj", 0f))
@@ -218,7 +219,7 @@ class Scene(private val window: GameWindow) {
             anzahlGegner -= 1
         }
         for(i in enemys){
-            i.enemy?.translateLocal(Vector3f(p, 2.0f, 0f))
+            i.enemy?.translateLocal(Vector3f(p, 3.0f, 5f))
             p += 5f
         }
 
@@ -231,8 +232,6 @@ class Scene(private val window: GameWindow) {
         cam.bind(staticShader)
         leben1.render(staticShader)
         player.player?.render(staticShader)
-
-
         licht1.bind(staticShader, "point1");
         licht2.bind(staticShader, "point2");
         licht3.bind(staticShader, "point3");
@@ -252,20 +251,20 @@ class Scene(private val window: GameWindow) {
 
     fun distanceToSomething(player : Renderable? , enemy : Renderable?): Pair<Float,Float>{
 
-        var playerX = player?.getWorldPosition();
-        var playerY = player?.getWorldPosition();
+        val playerX = player?.getWorldPosition();
+        val playerY = player?.getWorldPosition();
 
-        var px : Float = playerX!!.x;
-        var pz : Float= playerY!!.z;
+        val px : Float = playerX!!.x
+        val pz : Float= playerY!!.z
 
-        var enemyX = enemy?.getWorldPosition();
-        var enemyY = enemy?.getWorldPosition();
+        val enemyX = enemy?.getWorldPosition();
+        val enemyY = enemy?.getWorldPosition();
 
-        var ex = enemyX!!.x;
-        var ez = enemyY!!.z;
+        val ex = enemyX!!.x
+        val ez = enemyY!!.z
 
-        var xDistance = px - ex;
-        var zDistance = pz - ez;
+        val xDistance = px - ex
+        val zDistance = pz - ez
 
         return Pair(xDistance,zDistance)
     }
@@ -316,11 +315,11 @@ class Scene(private val window: GameWindow) {
 
     fun boxing(obj : Renderable?): MutableList<Float>{
 
-        val playerx = obj?.getWorldPosition();
-        val playerz = obj?.getWorldPosition();
+        val playerx = obj?.getWorldPosition()
+        val playerz = obj?.getWorldPosition()
 
-        val lx : Float = playerx!!.x;
-        val lz : Float= playerz!!.z;
+        val lx : Float = playerx!!.x
+        val lz : Float= playerz!!.z
 
         val posX = lx + 1.5f // 0
         val posY = lz + 1.5f // 1
@@ -394,7 +393,7 @@ class Scene(private val window: GameWindow) {
         player.playerWalking(player.player, dt, window, cam)
 
         if (window.getKeyState(GLFW.GLFW_KEY_C)){
-            leben1?.translateLocal(Vector3f(0f,20f,0f))
+            leben1.translateLocal(Vector3f(0f,20f,0f))
         }
 
         // Player is on the ground
@@ -475,7 +474,7 @@ class Scene(private val window: GameWindow) {
     var oldMousePosY = 0.0;
 
     fun onMouseMove(xpos: Double, ypos: Double) {
-        player?.player?.rotateAroundPoint(0f , (oldMousePosX - xpos).toFloat() * 0.1f, 0.0f, player?.player!!.getWorldPosition())
+        player.player?.rotateAroundPoint(0f , (oldMousePosX - xpos).toFloat() * 0.1f, 0.0f, player.player!!.getWorldPosition())
         oldMousePosX = xpos
         oldMousePosY = ypos
     }

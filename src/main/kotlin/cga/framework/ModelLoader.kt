@@ -147,8 +147,7 @@ object ModelLoader {
         // preprocessing rotation
         val rot = Matrix3f().rotateZ(roll).rotateY(yaw).rotateX(pitch)
         // create textures
-
-        //default textures
+//default textures
         val ddata = BufferUtils.createByteBuffer(4)
         ddata.put(0.toByte()).put(0.toByte()).put(0.toByte()).put(0.toByte())
         ddata.flip()
