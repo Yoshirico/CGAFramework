@@ -36,6 +36,9 @@ class Scene(private val window: GameWindow) {
 
     private var ground : Renderable
     private var arena : Renderable
+    private var gate1 : Renderable
+    private var gate2 : Renderable
+    private var gate3 : Renderable
     private var leben1 : Renderable
     var enemys = arrayListOf<Enemy>()
 
@@ -83,12 +86,66 @@ class Scene(private val window: GameWindow) {
 
         player = Player("assets/Light Cycle/avatar/Zack.obj",-85f,enemys)
 
+        //gate1
+        val diff3Tex = Texture2D("assets/textures/medieval_wood_diff.png", true)
+        diff3Tex.setTexParams(GL_REPEAT, GL_REPEAT, GL_NEAREST, GL_NEAREST)
+        val emit3Tex = Texture2D("assets/textures/medieval_wood_emit.png", true)
+        emit3Tex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+        val spec3Tex = Texture2D("assets/textures/medieval_wood_spec.png", true)
+        spec3Tex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+
+        val gate1Material = Material(diff3Tex,emit3Tex,spec3Tex,50.0f,Vector2f(5.0f, 5.0f)); GLError.checkThrow()
+
+        //load an object and create a mesh
+        val resGate1 : OBJResult = OBJLoader.loadOBJ("assets/arena/gate1.obj")
+        //Get the first mesh of the first object
+        val gate1Mesh: OBJMesh = resGate1.objects[0].meshes[0]
+        val meshGate1 = Mesh(gate1Mesh.vertexData, gate1Mesh.indexData, vertexAttributes,gate1Material) //arenaMaterial
+
+        gate1 = Renderable(mutableListOf(meshGate1))
+
+        //gate2
+        val diff4Tex = Texture2D("assets/textures/medieval_wood_diff.png", true)
+        diff4Tex.setTexParams(GL_REPEAT, GL_REPEAT, GL_NEAREST, GL_NEAREST)
+        val emit4Tex = Texture2D("assets/textures/medieval_wood_emit.png", true)
+        emit4Tex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+        val spec4Tex = Texture2D("assets/textures/medieval_wood_spec.png", true)
+        spec4Tex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+
+        val gate2Material = Material(diff4Tex,emit4Tex,spec4Tex,50.0f,Vector2f(5.0f, 5.0f)); GLError.checkThrow()
+
+        //load an object and create a mesh
+        val resGate2 : OBJResult = OBJLoader.loadOBJ("assets/arena/gate2.obj")
+        //Get the first mesh of the first object
+        val gate2Mesh: OBJMesh = resGate2.objects[0].meshes[0]
+        val meshGate2 = Mesh(gate2Mesh.vertexData, gate2Mesh.indexData, vertexAttributes,gate2Material) //arenaMaterial
+
+        gate2 = Renderable(mutableListOf(meshGate2))
+
+        //gate3
+        val diff5Tex = Texture2D("assets/textures/medieval_wood_diff.png", true)
+        diff5Tex.setTexParams(GL_REPEAT, GL_REPEAT, GL_NEAREST, GL_NEAREST)
+        val emit5Tex = Texture2D("assets/textures/medieval_wood_emit.png", true)
+        emit5Tex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+        val spec5Tex = Texture2D("assets/textures/medieval_wood_spec.png", true)
+        spec5Tex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
+
+        val gate3Material = Material(diff5Tex,emit5Tex,spec5Tex,50.0f,Vector2f(5.0f, 5.0f)); GLError.checkThrow()
+
+        //load an object and create a mesh
+        val resGate3 : OBJResult = OBJLoader.loadOBJ("assets/arena/gate3.obj")
+        //Get the first mesh of the first object
+        val gate3Mesh: OBJMesh = resGate3.objects[0].meshes[0]
+        val meshGate3 = Mesh(gate3Mesh.vertexData, gate3Mesh.indexData, vertexAttributes,gate3Material) //arenaMaterial
+
+        gate3 = Renderable(mutableListOf(meshGate3))
+
         //leben
-        val diff2Tex = Texture2D("assets/textures/Group 17.png", true)
+        val diff2Tex = Texture2D("assets/textures/herz_diff.png", true)
         diff2Tex.setTexParams(GL_REPEAT, GL_REPEAT, GL_NEAREST, GL_NEAREST)
-        val emit2Tex = Texture2D("assets/textures/Group 18.png", true)
+        val emit2Tex = Texture2D("assets/textures/herz_emit.png", true)
         emit2Tex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
-        val spec2Tex = Texture2D("assets/textures/Group 18.png", true)
+        val spec2Tex = Texture2D("assets/textures/herz_spec.png", true)
         spec2Tex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
 
         val leben1Material = Material(diff2Tex,emit2Tex,spec2Tex,50.0f,Vector2f(1.0f, 1.0f)); GLError.checkThrow()
@@ -130,11 +187,7 @@ class Scene(private val window: GameWindow) {
         val specTex = Texture2D("assets/textures/Stone_Floor_spec.png", true)
         specTex.setTexParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR)
 
-        val groundMaterial = Material(diffTex,
-            emitTex,
-            specTex,
-            50.0f,
-            Vector2f(10.0f, 10.0f)); GLError.checkThrow()
+        val groundMaterial = Material(diffTex,emitTex, specTex,50.0f,Vector2f(10.0f, 10.0f)); GLError.checkThrow()
 
         //load an object and create a mesh
         val resGround : OBJResult = OBJLoader.loadOBJ("assets/models/ground.obj")
@@ -142,10 +195,7 @@ class Scene(private val window: GameWindow) {
         val groundMesh: OBJMesh = resGround.objects[0].meshes[0]
         val meshGround = Mesh(groundMesh.vertexData, groundMesh.indexData, vertexAttributes,groundMaterial) //groundMaterial
 
-
-        // boden = grün
         ground = Renderable(mutableListOf(meshGround))
-        //ground.meshes[0].material.emitColor = Vector3f(0f, 1f, 0f)
 
         // cam
         cam = TronCamera()
@@ -172,8 +222,6 @@ class Scene(private val window: GameWindow) {
             p += 5f
         }
 
-
-
     }
 
     fun render(dt: Float, t: Float) {
@@ -191,6 +239,9 @@ class Scene(private val window: GameWindow) {
         spotLight.bind(staticShader, "spotLight", Matrix4f())
         pointLight.bind(staticShader, "pointLight")
         arena.render(staticShader)
+        gate1.render(staticShader)
+        gate2.render(staticShader)
+        gate3.render(staticShader)
         ground.render(staticShader)
 
         for (i in enemys){
