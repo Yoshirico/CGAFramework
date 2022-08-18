@@ -9,7 +9,7 @@ import java.io.InputStreamReader
 
 
 
-class SkyboxShaderProgram(vertexShaderPath: String, fragmentShaderPath: String, val int: Any) : ShaderProgram(vertexShaderPath, fragmentShaderPath) {
+/*class SkyboxShaderProgram(vertexShaderPath: String, fragmentShaderPath: String, val int: Any) : ShaderProgram(vertexShaderPath, fragmentShaderPath) {
 
 
 }

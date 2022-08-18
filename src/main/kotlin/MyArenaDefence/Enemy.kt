@@ -7,11 +7,12 @@ import cga.exercise.components.geometry.Renderable
 import org.joml.*
 
 class Enemy(private val objectpath : String, var radY : Float) {
-
+    var health = 1000
+    var isOn = true
     var currentRadius = radY
 
     var damage = 10
-    val enemy : Renderable? = ModelLoader.loadModel(objectpath, Math.toRadians(-90.0f), radY, 0.0f)
+    val enemy : Renderable? = ModelLoader.loadModel(objectpath, Math.toRadians(0.0f), radY, 0.0f)
 
     init {
         if(enemy == null)

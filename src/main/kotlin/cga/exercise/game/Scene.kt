@@ -10,7 +10,7 @@ import cga.exercise.components.geometry.VertexAttribute
 import cga.exercise.components.light.PointLight
 import cga.exercise.components.light.SpotLight
 import cga.exercise.components.shader.ShaderProgram
-import cga.exercise.components.shader.SkyboxShaderProgram
+//import cga.exercise.components.shader.SkyboxShaderProgram
 import cga.exercise.components.texture.Texture2D
 import cga.framework.GLError
 import cga.framework.GameWindow
@@ -29,15 +29,14 @@ import kotlin.math.pow
  */
 class Scene(private val window: GameWindow) {
     private val staticShader: ShaderProgram
-    private val skyboxShader: SkyboxShaderProgram
-    private val enemyOn : Boolean = false
+    //private val skyboxShader: SkyboxShaderProgram
+    private val enemyOn : Boolean = true
 
     private val cam : TronCamera
 
     private var ground : Renderable
     private var arena : Renderable
     private var leben1 : Renderable
-    var `shop-bike` : Renderable?
     var enemys = arrayListOf<Enemy>()
 
     private var licht1 : PointLight
@@ -73,7 +72,7 @@ class Scene(private val window: GameWindow) {
 
         //SkyboxShaderProgramm
 
-        skyboxShader = SkyboxShaderProgram("assets/shaders/skybox_vert.glsl", "assets/shaders/skybox_frag.glsl")
+        //skyboxShader = SkyboxShaderProgram("assets/shaders/skybox_vert.glsl", "assets/shaders/skybox_frag.glsl")
 
         //Create the mesh
         val stride: Int = 8 * 4
@@ -82,16 +81,8 @@ class Scene(private val window: GameWindow) {
         val attrNorm = VertexAttribute(3, GL_FLOAT, stride, 5 * 4) //normalval
         val vertexAttributes = arrayOf<VertexAttribute>(attrPos, attrTC, attrNorm)
 
-        player = Player("assets/Light Cycle/avatar/Zack.obj",-85f)
-        /*leben1 = ModelLoader.loadModel("assets/life/heartObj.obj", Math.toRadians(-30.0f), Math.toRadians(0.0f), 0.0f)
-        if(leben1 == null)
-        {
-            exitProcess(1)
-        }
-        //`shop-bike`?.meshes?.get(2)?.material?.emitColor = Vector3f(1.0f, 0.0f, 0.0f)
-        leben1?.scaleLocal(Vector3f(0.2f))
-        leben1?.translateGlobal(Vector3f(-4f , 2.3f, 0f ))
-        */
+        player = Player("assets/Light Cycle/avatar/Zack.obj",-85f,enemys)
+
         //leben
         val diff2Tex = Texture2D("assets/textures/Group 17.png", true)
         diff2Tex.setTexParams(GL_REPEAT, GL_REPEAT, GL_NEAREST, GL_NEAREST)
@@ -113,14 +104,6 @@ class Scene(private val window: GameWindow) {
         leben1.translateGlobal(Vector3f(0f , 2f, 0f ))
         leben1.rotateLocal(0f,0f,0f)
 
-        `shop-bike` = ModelLoader.loadModel("assets/Light Cycle/Light Cycle/HQ_Movie cycle.obj", Math.toRadians(-90.0f), Math.toRadians(90.0f), 0.0f)
-        if(`shop-bike` == null)
-        {
-            exitProcess(1)
-        }
-        //`shop-bike`?.meshes?.get(2)?.material?.emitColor = Vector3f(1.0f, 0.0f, 0.0f)
-        `shop-bike`?.scaleLocal(Vector3f(0.8f))
-        `shop-bike`?.translateGlobal(Vector3f(20f , 0f, 20f ))
         //Arena
         val diff1Tex = Texture2D("assets/textures/arena_diff.png", true)
         diff1Tex.setTexParams(GL_REPEAT, GL_REPEAT, GL_NEAREST, GL_NEAREST)
@@ -173,23 +156,19 @@ class Scene(private val window: GameWindow) {
 
         // Licht
         spotLight = SpotLight(Vector3f(0.0f, 0.5f, -0.7f), Vector3i(255, 255, 255), 16.5f, 20.5f)
-        spotLight.parent = `shop-bike`
-
         pointLight = PointLight(Vector3f(0.0f, 0.0f, 3.0f), Vector3i(255, 255, 255))
         licht1 = PointLight(Vector3f(0.0f, 50.0f, 0.0f), Vector3i(255, 255, 255))
         licht2 = PointLight(Vector3f(-1.0f, 0.0f, 1.0f), Vector3i(255, 255, 255))
         licht3 = PointLight(Vector3f(1.0f, 2000.5f, -1.0f), Vector3i(255, 255, 255))
 
-        pointLight.parent = `shop-bike`
-
         //fun placeEnemys
         while (anzahlGegner > 0){
-            enemys.add(Enemy("assets/Light Cycle/Light Cycle/HQ_Movie cycle.obj", 0f))
+            enemys.add(Enemy("assets/enemy/enemy.obj", 0f))
 
             anzahlGegner -= 1
         }
         for(i in enemys){
-            i.enemy?.translateLocal(Vector3f(p, 0.0f, 0f))
+            i.enemy?.translateLocal(Vector3f(p, 2.0f, 0f))
             p += 5f
         }
 
@@ -202,8 +181,7 @@ class Scene(private val window: GameWindow) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
         staticShader.use()
         cam.bind(staticShader)
-
-        `shop-bike`?.render(staticShader)
+        leben1.render(staticShader)
         player.player?.render(staticShader)
 
 
@@ -212,7 +190,7 @@ class Scene(private val window: GameWindow) {
         licht3.bind(staticShader, "point3");
         spotLight.bind(staticShader, "spotLight", Matrix4f())
         pointLight.bind(staticShader, "pointLight")
-
+        arena.render(staticShader)
         ground.render(staticShader)
 
         for (i in enemys){
@@ -331,7 +309,36 @@ class Scene(private val window: GameWindow) {
         return berechnungDiesachenBerechnet
     }
     var timebefore = 0
+    fun attack(obj: Enemy):Boolean {
+        var myReturn : Int = 10
+
+        val dist = distanceToSomething(player.player, obj.enemy)
+        val squaredDis = Math.sqrt(
+            dist.first * dist.first + dist.second * dist.second
+        )
+        if(squaredDis.toInt() < 6 ){
+            return true
+        }
+        return false
+
+    }
     fun update(dt: Float, t: Float) {
+
+        if (window.getKeyState(GLFW.GLFW_KEY_E)){
+            for (you in enemys){
+                if (attack(you)){
+                    you.health -= 50
+                }
+            }
+
+        }
+
+        for (enemy in enemys){
+            if (enemy.health <= 0){
+                enemy.isOn = false
+                enemy.enemy?.translateLocal(Vector3f(200f,0f,0f))
+            }
+        }
 
         player.playerWalking(player.player, dt, window, cam)
 
@@ -382,21 +389,29 @@ class Scene(private val window: GameWindow) {
 
         if (enemyOn){
             for (i in enemys) {
-                val deg = followMe(player.player, i.enemy).toFloat()
-                val x = distanceToSomething(player.player, i.enemy)
+                if (i.isOn) {
+                    val deg = followMe(player.player, i.enemy).toFloat()
+                    val x = distanceToSomething(player.player, i.enemy)
 
-                i.enemyLogic(
-                    player.player,
-                    dt,
-                    x,
-                    deg
-                )
+                    i.enemyLogic(
+                        player.player,
+                        dt,
+                        x,
+                        deg
+                    )
 
-                i.drive(dt, 5f)
+                    i.drive(dt, 5f)
 
-                if (ich_hab_langsam_keine_ahnung_mehr_wie_ich_die_ganzen_funktionen_nennen_soll(distanceToSomething(player.player, i.enemy)) < 5f ){
-                    if (colision(player.player, i.enemy, dt)) {
-                        player.takeDamage(i.damage)
+                    if (ich_hab_langsam_keine_ahnung_mehr_wie_ich_die_ganzen_funktionen_nennen_soll(
+                            distanceToSomething(
+                                player.player,
+                                i.enemy
+                            )
+                        ) < 5f
+                    ) {
+                        if (colision(player.player, i.enemy, dt)) {
+                            player.takeDamage(i.damage)
+                        }
                     }
                 }
             }
