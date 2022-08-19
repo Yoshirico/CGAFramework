@@ -51,7 +51,7 @@ class Scene(private val window: GameWindow) {
 
     var player : Player
 
-    var anzahlGegner = 3
+    var anzahlGegner = 6
     var p = -15.0f
 
     private var jumpSpeed = 0f
@@ -221,7 +221,7 @@ class Scene(private val window: GameWindow) {
             anzahlGegner -= 1
         }
         for(i in enemys){
-            i.enemy?.translateLocal(Vector3f(p, 3.0f, 5f))
+            i.enemy?.translateLocal(Vector3f(p, 3.0f, 50f))
             p += 5f
         }
 
@@ -374,10 +374,53 @@ class Scene(private val window: GameWindow) {
         return false
 
     }
-    fun update(dt: Float, t: Float) {
+    // Wave Logic
 
+    var wave = 1
+
+    fun spawnEnemys(ammount : Int){
+        var upCount = 0
+
+        while (upCount != ammount){
+            if (upCount % 2 ==  0){
+                enemys[upCount].enemy?.setPosition(10f + upCount.toFloat(),1.5f,10f)
+                enemys[upCount].isOn = true
+            } else {
+                enemys[upCount].enemy?.setPosition(-10f + upCount.toFloat(),1.5f,-10f)
+                enemys[upCount].isOn = true
+            }
+            upCount += 1
+        }
+    }
+
+    fun bossRound(extraHealth: Int){
+        val boss = enemys[0].enemy
+        boss?.setPosition(0f,0f,0f)
+        boss?.scaleLocal(Vector3f(3f))
+        enemys[0].health = extraHealth
+    }
+
+    fun runden(){
+
+        when(wave){
+            1 -> spawnEnemys(4)
+            2 -> spawnEnemys(6)
+            3 -> bossRound(5000)
+        }
+    }
+    fun debug(){
+        for (i in enemys){
+            println(i.isOn)
+        }
+    }
+    fun update(dt: Float, t: Float) {
+        if (t < 5f){
+            runden()
+        }
         if(window.getKeyState(GLFW.GLFW_KEY_Q)) {
             gate1?.translateLocal(Vector3f(0f,-10f*dt,0f))
+            gate2?.translateLocal(Vector3f(0f,-10f*dt,0f))
+            gate3?.translateLocal(Vector3f(0f,-10f*dt,0f))
         }
         if (window.getKeyState(GLFW.GLFW_KEY_E)) {
             for (you in enemys) {

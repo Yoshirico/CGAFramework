@@ -9,7 +9,7 @@ import org.joml.*
 
 
 class Boss(private val objectpath : String, var radY : Float) {
-    var health = 1000
+    var health = 8000
     var isOn = true
     var currentRadius = radY
     var damage = 10
