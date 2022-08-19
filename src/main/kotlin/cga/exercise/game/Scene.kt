@@ -435,12 +435,14 @@ class Scene(private val window: GameWindow) {
     }
 
     fun checkDeadEnemys():Boolean{
+        var c = 0
         for (i in enemys){
             if (i.isOn){
-                return false
+                c += 1
             }
         }
-        return true
+
+        return c == 0
     }
 
     var nochNeSwitch = false
