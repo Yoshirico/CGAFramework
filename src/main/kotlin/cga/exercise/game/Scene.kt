@@ -423,13 +423,45 @@ class Scene(private val window: GameWindow) {
     fun runden(){
 
         when(wave){
-            1 -> spawnEnemys(2)
-            2 -> spawnEnemys(4)
-            3 -> spawnEnemys(6)
-            4 -> {
-                spawnEnemys(2)
+            1 -> {
+                enemys[0].enemy?.setPosition(17f,1.5f,-20f)
+                enemys[0].isOn = true
+                enemys[1].enemy?.setPosition(18f,1.5f,-19f)
+                enemys[1].isOn = true
+            }
+            2 -> {
+                enemys[0].enemy?.setPosition(17f,1.5f,-20f)
+                enemys[0].isOn = true
+                enemys[1].enemy?.setPosition(18f,1.5f,-19f)
+                enemys[1].isOn = true
+
+                enemys[2].enemy?.setPosition(-20f,1.5f,17f)
+                enemys[2].isOn = true
+                enemys[3].enemy?.setPosition(-20f,1.5f,17f)
+                enemys[3].isOn = true
+            }
+            3 -> {
+                enemys[0].enemy?.setPosition(17f,1.5f,-20f)
+                enemys[0].isOn = true
+                enemys[1].enemy?.setPosition(18f,1.5f,-19f)
+                enemys[1].isOn = true
+
+                enemys[2].enemy?.setPosition(-20f,1.5f,17f)
+                enemys[2].isOn = true
+                enemys[3].enemy?.setPosition(-20f,1.5f,17f)
+                enemys[3].isOn = true
+
+                enemys[4].enemy?.setPosition(24f,1.5f,13f)
+                enemys[4].isOn = true
+                enemys[5].enemy?.setPosition(18f,1.5f,21f)
+                enemys[5].isOn = true
+
                 bossRound(5000)
             }
+        }
+
+        for (i in enemys){
+            i.damage += 25
         }
     }
 
