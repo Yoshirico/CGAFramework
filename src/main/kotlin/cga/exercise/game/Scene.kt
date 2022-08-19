@@ -252,7 +252,7 @@ class Scene(private val window: GameWindow) {
         top.translateLocal(Vector3f(0f, 6f, 20f))
 
         normal.rotateLocal(Math.toRadians(-35f), toRadians(0f), 0f)
-        normal.translateLocal(Vector3f(0f, 0f, 10f))
+        normal.translateLocal(Vector3f(0f, 2f, 3f))
 
         first.translateLocal(Vector3f(0f,0.75f,-1f))
 
@@ -596,6 +596,19 @@ class Scene(private val window: GameWindow) {
             nochneVariable = 500
         }
 
+        //gewonnen
+        if (wave == 4){
+            player.player?.setPosition(100f,0f,100f)
+            cam = first
+            nochNeSwitch = false
+        }
+
+        //Verloren
+        if (player.health < 0){
+            player.player?.translateLocal(Vector3f(100f,0f,-100f))
+        }
+
+        
         if (nochneVariable != 0){
             torRunterfahren(true,wave,dt)
             nochneVariable -= 1
@@ -645,10 +658,6 @@ class Scene(private val window: GameWindow) {
                 enemy.isOn = false
                 enemy.enemy?.translateLocal(Vector3f(200f,0f,0f))
             }
-        }
-
-        if (player.health < 0){
-            player.player?.translateLocal(Vector3f(0f,100f,0f))
         }
 
         if (boss.health < 0){
