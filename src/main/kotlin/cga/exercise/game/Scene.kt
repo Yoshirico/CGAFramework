@@ -3,6 +3,8 @@ package cga.exercise.game
 import MyArenaDefence.Boss
 import MyArenaDefence.Enemy
 import MyArenaDefence.Player
+import cga.exercise.components.camera.FirstPerson
+import cga.exercise.components.camera.TopView
 import cga.exercise.components.camera.TronCamera
 import cga.exercise.components.geometry.Material
 import cga.exercise.components.geometry.*
@@ -20,6 +22,7 @@ import cga.framework.OBJLoader
 import cga.framework.OBJLoader.OBJMesh
 import cga.framework.OBJLoader.OBJResult
 import org.joml.*
+import org.joml.Math.toRadians
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL11.*
 import kotlin.system.exitProcess
@@ -168,17 +171,17 @@ class Scene(private val window: GameWindow) {
 
         leben1 = Renderable(mutableListOf(meshLeben1))
         leben1.scaleLocal(Vector3f(0.1f))
-        leben1.translateGlobal(Vector3f(-0.5f , 2.5f, 0f ))
+        leben1.translateGlobal(Vector3f(-0.5f , 2f, 0f ))
         leben1.rotateLocal(0f,0f,0f)
 
         leben2 = Renderable(mutableListOf(meshLeben1))
         leben2.scaleLocal(Vector3f(0.1f))
-        leben2.translateGlobal(Vector3f(0f , 2.5f, 0f ))
+        leben2.translateGlobal(Vector3f(0f , 2f, 0f ))
         leben2.rotateLocal(0f,0f,0f)
 
         leben3 = Renderable(mutableListOf(meshLeben1))
         leben3.scaleLocal(Vector3f(0.1f))
-        leben3.translateGlobal(Vector3f(0.5f , 2.5f, 0f ))
+        leben3.translateGlobal(Vector3f(0.5f , 2f, 0f ))
         leben3.rotateLocal(0f,0f,0f)
 
         //Arena
@@ -222,16 +225,19 @@ class Scene(private val window: GameWindow) {
         cam.rotateLocal(-35.0f, 0.0f, 0.0f)
         cam.translateLocal(Vector3f(0.0f,  0.0f, 4.0f))
         cam.parent = player.player
+
+
+
         leben1.parent = player.player
         leben2.parent = player.player
         leben3.parent = player.player
 
         // Licht
         spotLight = SpotLight(Vector3f(0.0f, 1.0f, 0.0f), Vector3i(255, 255, 255), 0f, 0f)
-        pointLight = PointLight(Vector3f(0.0f, 6.0f, 0.0f), Vector3i(255, 255, 255))
-        licht1 = PointLight(Vector3f(-20.0f, 5.0f, 17.0f), Vector3i(255, 0, 255))
-        licht2 = PointLight(Vector3f(20.0f, 5.0f, 17.0f), Vector3i(255, 0, 255))
-        licht3 = PointLight(Vector3f(21.0f, 5.0f, -17.0f), Vector3i(255, 0, 255))
+        pointLight = PointLight(Vector3f(0.0f, 1.5f, 0.0f), Vector3i(255, 255, 255))
+        licht1 = PointLight(Vector3f(2.0f, 0.0f, 1.0f), Vector3i(255, 255, 255))
+        licht2 = PointLight(Vector3f(3.0f, 0.0f, 1.0f), Vector3i(255, 255, 255))
+        licht3 = PointLight(Vector3f(4.0f, 0.0f, 1.0f), Vector3i(255, 255, 255))
 
         pointLight.parent = player.player
         spotLight.parent = player.player
@@ -435,7 +441,7 @@ class Scene(private val window: GameWindow) {
 
     fun bossRound(extraHealth: Int){
         boss.isOn = true
-        boss.boss?.setPosition(20f,2f,17f)
+        boss.boss?.setPosition(20f,3f,17f)
         boss.boss?.scaleLocal(Vector3f(1.5f))
         boss.health = extraHealth
     }
@@ -536,6 +542,23 @@ class Scene(private val window: GameWindow) {
 
     fun update(dt: Float, t: Float) {
 
+        if (window.getKeyState(GLFW.GLFW_KEY_1)){
+            cam.rotateLocal(toRadians(-85f), 0f, 0f)
+            cam.translateLocal(Vector3f(0f, 6f, 20f))
+        }
+
+        if (window.getKeyState(GLFW.GLFW_KEY_2)){
+                cam.rotateLocal(Math.toRadians(-30f), toRadians(0f), 0f)
+                cam.translateLocal(Vector3f(0f, 0f, 4f))
+            } 
+
+            if (window.getKeyState(GLFW.GLFW_KEY_3)){
+                cam.rotateLocal(Math.toRadians(-35f), toRadians(0f), 0f)
+                cam.translateLocal(Vector3f(0f, 0f, 10f))
+            }
+
+
+
         if(player.health < 0){
             leben1.translateLocal(Vector3f(0f,100f,0f))
         } else if (player.health < 1000){
@@ -584,8 +607,8 @@ class Scene(private val window: GameWindow) {
         }
 
         if (taschenlampe){
-            spotLight.innerCone = 4.5f
-            spotLight.outerCone = 5.5f
+            spotLight.innerCone = 2.5f
+            spotLight.outerCone = 3.5f
         } else {
             spotLight.innerCone = 0f
             spotLight.outerCone = 0f
