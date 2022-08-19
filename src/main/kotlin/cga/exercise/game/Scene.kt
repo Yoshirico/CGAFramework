@@ -1,5 +1,6 @@
 package cga.exercise.game
 
+import MyArenaDefence.Boss
 import MyArenaDefence.Enemy
 import MyArenaDefence.Player
 import cga.exercise.components.camera.TronCamera
@@ -48,6 +49,7 @@ class Scene(private val window: GameWindow) {
 
     private var pointLight : PointLight
     private var spotLight : SpotLight
+    private var boss : Boss
 
     var player : Player
 
@@ -85,6 +87,8 @@ class Scene(private val window: GameWindow) {
         val vertexAttributes = arrayOf<VertexAttribute>(attrPos, attrTC, attrNorm)
 
         player = Player("assets/Light Cycle/avatar/hero.obj",-85f,enemys)
+
+
 
         //gate1
         val diff3Tex = Texture2D("assets/textures/medieval_wood_diff.png", true)
@@ -224,6 +228,8 @@ class Scene(private val window: GameWindow) {
             i.enemy?.translateLocal(Vector3f(p, 3.0f, 50f))
             p += 5f
         }
+
+        boss = Boss("assets/enemy/boss.obj", 0f)
 
     }
 
@@ -394,9 +400,9 @@ class Scene(private val window: GameWindow) {
     }
 
     fun bossRound(extraHealth: Int){
-        val boss = enemys[0].enemy
-        boss?.setPosition(0f,0f,0f)
-        boss?.scaleLocal(Vector3f(3f))
+
+        boss.boss?.setPosition(0f,0f,0f)
+        boss.boss?.scaleLocal(Vector3f(3f))
         enemys[0].health = extraHealth
     }
 
@@ -405,7 +411,8 @@ class Scene(private val window: GameWindow) {
         when(wave){
             1 -> spawnEnemys(2)
             2 -> spawnEnemys(4)
-            3 -> {
+            3 -> spawnEnemys(6)
+            4 -> {
                 spawnEnemys(2)
                 bossRound(5000)
             }
@@ -449,7 +456,7 @@ class Scene(private val window: GameWindow) {
 
     fun update(dt: Float, t: Float) {
 
-        if (checkDeadEnemys()){
+        if (checkDeadEnemys() && nochNeSwitch){
             wave += 1
             runden()
         }
