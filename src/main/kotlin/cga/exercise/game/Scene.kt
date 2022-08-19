@@ -380,6 +380,20 @@ class Scene(private val window: GameWindow) {
         return false
 
     }
+
+    fun attack(obj: Boss):Boolean {
+        var myReturn : Int = 10
+
+        val dist = distanceToSomething(player.player, obj.boss)
+        val squaredDis = Math.sqrt(
+            dist.first * dist.first + dist.second * dist.second
+        )
+        if(squaredDis.toInt() < 6 ){
+            return true
+        }
+        return false
+
+    }
     // Wave Logic
 
     var wave = 1
@@ -392,7 +406,7 @@ class Scene(private val window: GameWindow) {
                 enemys[upCount].enemy?.setPosition(17f + upCount.toFloat(),1.5f,-20f)
                 enemys[upCount].isOn = true
             } else {
-                enemys[upCount].enemy?.setPosition(-21f + upCount.toFloat(),1.5f,-17f)
+                enemys[upCount].enemy?.setPosition(-20f + upCount.toFloat(),1.5f,17f)
                 enemys[upCount].isOn = true
             }
             upCount += 1
@@ -490,8 +504,11 @@ class Scene(private val window: GameWindow) {
         if (window.getKeyState(GLFW.GLFW_KEY_E)) {
             for (you in enemys) {
                 if (attack(you)) {
-                    you.health -= 50
+                    you.health -= player.damage
                 }
+            }
+            if (attack(boss)){
+                boss.health  -= player.damage
             }
         }
 
