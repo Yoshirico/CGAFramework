@@ -42,6 +42,11 @@ class Scene(private val window: GameWindow) {
     private var gate2 : Renderable
     private var gate3 : Renderable
     private var leben1 : Renderable
+    private var leben2 : Renderable
+    private var leben3 : Renderable
+
+
+
     var enemys = arrayListOf<Enemy>()
 
     private var licht1 : PointLight
@@ -165,6 +170,16 @@ class Scene(private val window: GameWindow) {
         leben1.scaleLocal(Vector3f(0.1f))
         leben1.translateGlobal(Vector3f(0f , 2f, 0f ))
         leben1.rotateLocal(0f,0f,0f)
+
+        leben2 = Renderable(mutableListOf(meshLeben1))
+        leben2.scaleLocal(Vector3f(0.1f))
+        leben2.translateGlobal(Vector3f(1f , 2f, 0f ))
+        leben2.rotateLocal(0f,0f,0f)
+
+        leben3 = Renderable(mutableListOf(meshLeben1))
+        leben3.scaleLocal(Vector3f(0.1f))
+        leben3.translateGlobal(Vector3f(-1f , 2f, 0f ))
+        leben3.rotateLocal(0f,0f,0f)
 
         //Arena
         val diff1Tex = Texture2D("assets/textures/arena_diff.png", true)
@@ -403,7 +418,7 @@ class Scene(private val window: GameWindow) {
         val squaredDis = Math.sqrt(
             dist.first * dist.first + dist.second * dist.second
         )
-        if(squaredDis.toInt() < 4 ){
+        if(squaredDis.toInt() < 2 ){
             return true
         }
         return false
@@ -423,6 +438,10 @@ class Scene(private val window: GameWindow) {
 
         when(wave){
             1 -> {
+                for (i in enemys){
+                    i.health = 2000
+                    i.damage = 5
+                }
                 enemys[2].enemy?.setPosition(-20f,1.5f,17f)
                 enemys[2].isOn = true
                 enemys[3].enemy?.setPosition(-20f,1.5f,17f)
@@ -431,6 +450,7 @@ class Scene(private val window: GameWindow) {
             2 -> {
                 for (i in enemys){
                     i.health = 2000
+                    i.damage = 10
                 }
                 enemys[0].enemy?.setPosition(17f,1.5f,-20f)
                 enemys[0].isOn = true
@@ -445,6 +465,7 @@ class Scene(private val window: GameWindow) {
             3 -> {
                 for (i in enemys){
                     i.health = 2500
+                    i.damage = 15
                 }
 
                 enemys[0].enemy?.setPosition(17f,1.5f,-20f)
@@ -466,9 +487,6 @@ class Scene(private val window: GameWindow) {
             }
         }
 
-        for (i in enemys){
-            i.damage += 25
-        }
     }
 
     var zwischenspeicher = 500
@@ -557,7 +575,7 @@ class Scene(private val window: GameWindow) {
         }
 
         if (player.health < 0){
-            player.player?.translateLocal(Vector3f(500f,500f,500f))
+            player.player?.translateLocal(Vector3f(0f,100f,0f))
         }
 
         if (boss.health < 0){
@@ -639,7 +657,6 @@ class Scene(private val window: GameWindow) {
                 }
             }
         }
-
 
         if (enemyOn){
             for (i in enemys) {
