@@ -227,7 +227,7 @@ class Scene(private val window: GameWindow) {
         leben3.parent = player.player
 
         // Licht
-        spotLight = SpotLight(Vector3f(0.0f, 1.0f, 0.0f), Vector3i(255, 255, 255), 2.5f, 3.5f)
+        spotLight = SpotLight(Vector3f(0.0f, 1.0f, 0.0f), Vector3i(255, 255, 255), 0f, 0f)
         pointLight = PointLight(Vector3f(0.0f, 1.5f, 0.0f), Vector3i(255, 255, 255))
         licht1 = PointLight(Vector3f(2.0f, 0.0f, 1.0f), Vector3i(255, 255, 255))
         licht2 = PointLight(Vector3f(3.0f, 0.0f, 1.0f), Vector3i(255, 255, 255))
@@ -571,6 +571,10 @@ class Scene(private val window: GameWindow) {
         torRunterfahren(onoffSwitch,wave,dt)
 
         if (window.getKeyState(GLFW.GLFW_KEY_E)) {
+
+            spotLight.innerCone = 2.5f
+            spotLight.outerCone = 3.5f
+
             for (you in enemys) {
                 if (attack(you)) {
                     you.health -= player.damage
