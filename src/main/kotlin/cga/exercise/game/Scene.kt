@@ -3,6 +3,7 @@ package cga.exercise.game
 import MyArenaDefence.Boss
 import MyArenaDefence.Enemy
 import MyArenaDefence.Player
+import cga.exercise.components.camera.ICamera
 import cga.exercise.components.camera.TronCamera
 import cga.exercise.components.geometry.Material
 import cga.exercise.components.geometry.*
@@ -35,7 +36,13 @@ class Scene(private val window: GameWindow) {
     //private val skyboxShader: SkyboxShaderProgram
     private val enemyOn : Boolean = true
 
-    private val cam : TronCamera
+
+    val first = TronCamera()
+    val top = TronCamera()
+    val normal = TronCamera()
+
+    private var cam : ICamera
+
 
     private var ground : Renderable
     private var arena : Renderable
@@ -235,12 +242,19 @@ class Scene(private val window: GameWindow) {
         ground = Renderable(mutableListOf(meshGround))
 
         // cam
-        cam = TronCamera()
-        cam.rotateLocal(-35.0f, 0.0f, 0.0f)
-        cam.translateLocal(Vector3f(0.0f,  0.0f, 4.0f))
-        cam.parent = player.player
+        first.parent = player.player
+        top.parent = player.player
+        normal.parent = player.player
 
+        cam = normal
 
+        top.rotateLocal(toRadians(-85f), 0f, 0f)
+        top.translateLocal(Vector3f(0f, 6f, 20f))
+
+        normal.rotateLocal(Math.toRadians(-35f), toRadians(0f), 0f)
+        normal.translateLocal(Vector3f(0f, 0f, 10f))
+
+        first.translateLocal(Vector3f(0f,0.75f,-1f))
 
         leben1.parent = player.player
         leben2.parent = player.player
@@ -553,24 +567,19 @@ class Scene(private val window: GameWindow) {
     var nochneVariable = 0
     var taschenlampe = false
     var binlangsamueberfordert = 0f
-
+    var start = true
     fun update(dt: Float, t: Float) {
 
-        if (window.getKeyState(GLFW.GLFW_KEY_1)){
-            cam.rotateLocal(toRadians(-85f), 0f, 0f)
-            cam.translateLocal(Vector3f(0f, 6f, 20f))
+        if (start){
+            cam = normal
+            start = false
         }
 
-        if (window.getKeyState(GLFW.GLFW_KEY_2)){
-                cam.rotateLocal(Math.toRadians(-30f), toRadians(0f), 0f)
-                cam.translateLocal(Vector3f(0f, 0f, 4f))
-            } 
+        if (window.getKeyState(GLFW.GLFW_KEY_1)) cam = first
 
-            if (window.getKeyState(GLFW.GLFW_KEY_3)){
-                cam.rotateLocal(Math.toRadians(-35f), toRadians(0f), 0f)
-                cam.translateLocal(Vector3f(0f, 0f, 10f))
-            }
+        if (window.getKeyState(GLFW.GLFW_KEY_2)) cam = top
 
+        if (window.getKeyState(GLFW.GLFW_KEY_3)) cam = normal
 
 
         if(player.health < 0){
@@ -648,7 +657,7 @@ class Scene(private val window: GameWindow) {
         }
 
         if (nochNeSwitch && player.health > 0){
-            player.playerWalking(player.player, dt, window, cam)
+            player.playerWalking(player.player, dt, window)
         }
 
         if (window.getKeyState(GLFW.GLFW_KEY_C)){
@@ -758,7 +767,7 @@ class Scene(private val window: GameWindow) {
                 }
             }
         }
-    println(player.alive)
+        println(player.alive)
     }
 
     fun onKey(key: Int, scancode: Int, action: Int, mode: Int) {}
