@@ -571,9 +571,7 @@ class Scene(private val window: GameWindow) {
         torRunterfahren(onoffSwitch,wave,dt)
 
         if (window.getKeyState(GLFW.GLFW_KEY_E)) {
-
-            spotLight.innerCone = 2.5f
-            spotLight.outerCone = 3.5f
+            taschenlampe = true
 
             for (you in enemys) {
                 if (attack(you)) {
@@ -585,9 +583,17 @@ class Scene(private val window: GameWindow) {
             }
         }
 
-        spotLight.innerCone = 0f
-        spotLight.outerCone = 0f
+        if (taschenlampe){
+            spotLight.innerCone = 2.5f
+            spotLight.outerCone = 3.5f
+        } else {
+            spotLight.innerCone = 0f
+            spotLight.outerCone = 0f
+        }
 
+        if (!window.getKeyState(GLFW.GLFW_KEY_E)){
+            taschenlampe = false
+        }
         for (enemy in enemys){
             if (enemy.health <= 0){
                 enemy.isOn = false
