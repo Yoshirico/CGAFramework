@@ -29,10 +29,10 @@ Rendering
 - Einbindung externer Modelle (siehe Quelle) (Enrico)
 
 Transformationen
--> Hüpfen mit Leertaste (Domenic)
--> Gegnerlogik (Domenic)
--> Anvisieren des Spielers (Domenic)
--> gegner laufen zum spieler (Domenic)
+- Hüpfen mit Leertaste (Domenic)
+- Gegnerlogik (Domenic)
+- Anvisieren des Spielers (Domenic)
+- gegner laufen zum spieler (Domenic)
 
 Kamera
 - Implementierung und Wechsel: First-Person-Kamera, Normal-Kamera und wide view (Domenic)
