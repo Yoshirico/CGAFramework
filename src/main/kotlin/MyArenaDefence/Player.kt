@@ -13,6 +13,7 @@ class Player(private val objectpath : String, var radY : Float,val enemyList :  
 
     var currentRadius = radY
 
+    var damage = 50
     var health = 2000
     val player : Renderable? = ModelLoader.loadModel(objectpath, Math.toRadians(0.0f), radY, 0.0f)
     var alive : Boolean = 0 < health
