@@ -563,7 +563,7 @@ class Scene(private val window: GameWindow) {
     }
 
     var nochNeSwitch = false
-
+    var ingame = true
     var nochneVariable = 0
     var taschenlampe = false
     var binlangsamueberfordert = 0f
@@ -573,6 +573,7 @@ class Scene(private val window: GameWindow) {
         if (start){
             cam = normal
             start = false
+            ingame =  true
         }
 
         if (window.getKeyState(GLFW.GLFW_KEY_1)) cam = first
@@ -597,18 +598,23 @@ class Scene(private val window: GameWindow) {
         }
 
         //gewonnen
-        if (wave == 4){
+        if (wave == 4 && boss.health < 0){
             player.player?.setPosition(100f,0f,100f)
             cam = first
             nochNeSwitch = false
+            boss.boss?.setPosition(300f,500f,100f)
+            ingame = false
         }
 
         //Verloren
         if (player.health < 0){
             player.player?.translateLocal(Vector3f(100f,0f,-100f))
+            boss.boss?.setPosition(300f,500f,100f)
+            cam = first
+            ingame = false
         }
 
-        
+
         if (nochneVariable != 0){
             torRunterfahren(true,wave,dt)
             nochneVariable -= 1
@@ -785,9 +791,11 @@ class Scene(private val window: GameWindow) {
     var oldMousePosY = 0.0;
 
     fun onMouseMove(xpos: Double, ypos: Double) {
-        player.player?.rotateAroundPoint(0f , (oldMousePosX - xpos).toFloat() * 0.1f, 0.0f, player.player!!.getWorldPosition())
-        oldMousePosX = xpos
-        oldMousePosY = ypos
+        if(ingame){
+            player.player?.rotateAroundPoint(0f , (oldMousePosX - xpos).toFloat() * 0.1f, 0.0f, player.player!!.getWorldPosition())
+            oldMousePosX = xpos
+            oldMousePosY = ypos
+        }
     }
 
     fun cleanup() {}
