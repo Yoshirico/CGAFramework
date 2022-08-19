@@ -84,7 +84,7 @@ class Scene(private val window: GameWindow) {
         val attrNorm = VertexAttribute(3, GL_FLOAT, stride, 5 * 4) //normalval
         val vertexAttributes = arrayOf<VertexAttribute>(attrPos, attrTC, attrNorm)
 
-        player = Player("assets/Light Cycle/avatar/Zack.obj",-85f,enemys)
+        player = Player("assets/Light Cycle/avatar/hero.obj",-85f,enemys)
 
         //gate1
         val diff3Tex = Texture2D("assets/textures/medieval_wood_diff.png", true)
@@ -205,13 +205,15 @@ class Scene(private val window: GameWindow) {
         leben1.parent = player.player
 
         // Licht
-        spotLight = SpotLight(Vector3f(5.0f, 1.0f, 1.0f), Vector3i(255, 255, 255), 16.5f, 20.5f)
-        pointLight = PointLight(Vector3f(0.0f, 1.5f, 0.0f), Vector3i(0, 0, 255))
+        spotLight = SpotLight(Vector3f(0.0f, 1.0f, 0.0f), Vector3i(255, 255, 255), 4.5f, 5.5f)
+        pointLight = PointLight(Vector3f(0.0f, 1.5f, 0.0f), Vector3i(255, 255, 255))
         licht1 = PointLight(Vector3f(2.0f, 0.0f, 1.0f), Vector3i(255, 255, 255))
         licht2 = PointLight(Vector3f(3.0f, 0.0f, 1.0f), Vector3i(255, 255, 255))
         licht3 = PointLight(Vector3f(4.0f, 0.0f, 1.0f), Vector3i(255, 255, 255))
 
-        pointLight.parent =player.player
+        pointLight.parent = player.player
+        spotLight.parent = player.player
+
         //fun placeEnemys
         while (anzahlGegner > 0){
             enemys.add(Enemy("assets/enemy/enemy.obj", 0f))
@@ -374,14 +376,17 @@ class Scene(private val window: GameWindow) {
     }
     fun update(dt: Float, t: Float) {
 
-        if (window.getKeyState(GLFW.GLFW_KEY_E)){
-            for (you in enemys){
-                if (attack(you)){
+        if(window.getKeyState(GLFW.GLFW_KEY_Q)) {
+            gate1?.translateLocal(Vector3f(0f,-10f*dt,0f))
+        }
+        if (window.getKeyState(GLFW.GLFW_KEY_E)) {
+            for (you in enemys) {
+                if (attack(you)) {
                     you.health -= 50
                 }
             }
-
         }
+
 
         for (enemy in enemys){
             if (enemy.health <= 0){

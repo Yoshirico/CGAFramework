@@ -1,0 +1,85 @@
+# Blender MTL File: 'hero.blend'
+# Material Count: 7
+
+newmtl Body
+Ns 224.999983
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump Caitlyn_Body_Normal.png
+map_Kd Caitlyn_Body_BaseColor.png
+
+newmtl CaitlynClothesBottom
+Ns 224.999983
+Ka 1.000000 1.000000 1.000000
+Kd 0.083586 0.024410 0.420012
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump ClothesCaitlynBottom_CaitlynClothesBottom_Normal.png
+map_Kd ClothesCaitlynBottom_CaitlynClothesBottom_BaseColor.png
+
+newmtl CaitlynClothesTop
+Ns 21.217994
+Ka 1.000000 1.000000 1.000000
+Kd 0.055052 0.022117 0.334315
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump ClothesCaitlynTop_CaitlynClothesTop_Normal.png
+map_Kd ClothesCaitlynTop_CaitlynClothesTop_BaseColor.png
+
+newmtl EyesAnimePurple
+Ns 458.349198
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd animeEye.png
+
+newmtl HairCardsCaitlyn
+Ns 33.494028
+Ka 1.000000 1.000000 1.000000
+Kd 0.094626 0.035205 0.023797
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump HairsCaitlynNormal.png
+map_Kd HairsCaitlynBaseColor.png
+map_d HairsCaitlynBaseAlpha.png
+
+newmtl Head
+Ns 224.999983
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump Caitlyn_Head_Normal.png
+map_Kd Caitlyn_Head_BaseColor.png
+
+newmtl Material.002
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd Caitlyn_Body_Opacity.png
