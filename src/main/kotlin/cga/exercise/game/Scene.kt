@@ -396,10 +396,10 @@ class Scene(private val window: GameWindow) {
 
     }
 
-    fun attackPlayer(obj: Player):Boolean {
+    fun attackPlayer(obj: Enemy):Boolean {
         var myReturn : Int = 10
 
-        val dist = distanceToSomething(player.player, obj.boss)
+        val dist = distanceToSomething(player.player, obj.enemy)
         val squaredDis = Math.sqrt(
             dist.first * dist.first + dist.second * dist.second
         )
@@ -665,11 +665,11 @@ class Scene(private val window: GameWindow) {
                     val deg = followMe(player.player, i.enemy).toFloat()
                     val x = distanceToSomething(player.player, i.enemy)
 
-                    if (attackPlayer(player)){
+                    if (attackPlayer(i)){
                         player.health  -= i.damage
                     }
 
-                    i.enemy.translateLocal(Vector3f(0f, sin(3.5f*binlangsamueberfordert)*dt,0f))
+                    i.enemy?.translateLocal(Vector3f(0f, sin(3.5f*binlangsamueberfordert)*dt,0f))
                     binlangsamueberfordert += 0.2f
 
                     i.enemyLogic(
