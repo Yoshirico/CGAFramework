@@ -430,6 +430,9 @@ class Scene(private val window: GameWindow) {
                 enemys[1].isOn = true
             }
             2 -> {
+                for (i in enemys){
+                    i.health = 2000
+                }
                 enemys[0].enemy?.setPosition(17f,1.5f,-20f)
                 enemys[0].isOn = true
                 enemys[1].enemy?.setPosition(18f,1.5f,-19f)
@@ -441,6 +444,10 @@ class Scene(private val window: GameWindow) {
                 enemys[3].isOn = true
             }
             3 -> {
+                for (i in enemys){
+                    i.health = 2500
+                }
+                
                 enemys[0].enemy?.setPosition(17f,1.5f,-20f)
                 enemys[0].isOn = true
                 enemys[1].enemy?.setPosition(18f,1.5f,-19f)
