@@ -536,11 +536,11 @@ class Scene(private val window: GameWindow) {
 
     fun update(dt: Float, t: Float) {
 
-        if(player.health < 2000){
+        if(player.health < 0){
             leben1.translateLocal(Vector3f(0f,100f,0f))
         } else if (player.health < 1000){
             leben2.translateLocal(Vector3f(0f,100f,0f))
-        } else if (player.health < 0){
+        } else if (player.health < 2000){
             leben3.translateLocal(Vector3f(0f,100f,0f))
         }
 
