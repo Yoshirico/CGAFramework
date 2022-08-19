@@ -383,10 +383,10 @@ class Scene(private val window: GameWindow) {
 
         while (upCount != ammount){
             if (upCount % 2 ==  0){
-                enemys[upCount].enemy?.setPosition(10f + upCount.toFloat(),1.5f,10f)
+                enemys[upCount].enemy?.setPosition(17f + upCount.toFloat(),1.5f,-20f)
                 enemys[upCount].isOn = true
             } else {
-                enemys[upCount].enemy?.setPosition(-10f + upCount.toFloat(),1.5f,-10f)
+                enemys[upCount].enemy?.setPosition(21f + upCount.toFloat(),1.5f,-17f)
                 enemys[upCount].isOn = true
             }
             upCount += 1
@@ -403,9 +403,12 @@ class Scene(private val window: GameWindow) {
     fun runden(){
 
         when(wave){
-            1 -> spawnEnemys(4)
-            2 -> spawnEnemys(6)
-            3 -> bossRound(5000)
+            1 -> spawnEnemys(2)
+            2 -> spawnEnemys(4)
+            3 -> {
+                spawnEnemys(2)
+                bossRound(5000)
+            }
         }
     }
 
@@ -416,24 +419,38 @@ class Scene(private val window: GameWindow) {
         if (x){
             when (p) {
                 3 -> {
-                    gate1.translateLocal(Vector3f(0f,-10f*dt,0f))
-                    gate2.translateLocal(Vector3f(0f,-10f*dt,0f))
-                    gate3.translateLocal(Vector3f(0f,-10f*dt,0f))
+                    gate1.translateLocal(Vector3f(0f,-5f*dt,0f))
+                    gate2.translateLocal(Vector3f(0f,-5f*dt,0f))
+                    gate3.translateLocal(Vector3f(0f,-5f*dt,0f))
                 }
                 2 -> {
-                    gate2.translateLocal(Vector3f(0f,-10f*dt,0f))
-                    gate3.translateLocal(Vector3f(0f,-10f*dt,0f))
+                    gate2.translateLocal(Vector3f(0f,-5f*dt,0f))
+                    gate3.translateLocal(Vector3f(0f,-5f*dt,0f))
                 }
                 1 -> {
-                    gate3.translateLocal(Vector3f(0f,-10f*dt,0f))
+                    gate3.translateLocal(Vector3f(0f,-5f*dt,0f))
                 }
             }
         }
     }
 
+    fun checkDeadEnemys():Boolean{
+        for (i in enemys){
+            if (i.isOn){
+                return false
+            }
+        }
+        return true
+    }
+
     var nochNeSwitch = false
 
     fun update(dt: Float, t: Float) {
+
+        if (checkDeadEnemys()){
+            wave += 1
+            runden()
+        }
 
         val zeit = t.toInt()
         if (window.getKeyState(GLFW.GLFW_KEY_ENTER)){
@@ -446,6 +463,9 @@ class Scene(private val window: GameWindow) {
             6 + zwischenspeicher -> runden()
             8 + zwischenspeicher -> nochNeSwitch = true
         }
+
+        println(player.player?.getWorldPosition()?.x)
+        println(player.player?.getWorldPosition()?.z)
 
         torRunterfahren(onoffSwitch,wave,dt)
 
