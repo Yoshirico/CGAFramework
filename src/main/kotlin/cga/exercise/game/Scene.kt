@@ -431,6 +431,8 @@ class Scene(private val window: GameWindow) {
         }
     }
 
+    var nochNeSwitch = false
+
     fun update(dt: Float, t: Float) {
 
         val zeit = t.toInt()
@@ -442,6 +444,7 @@ class Scene(private val window: GameWindow) {
             1 + zwischenspeicher -> onoffSwitch = true
             5 + zwischenspeicher -> onoffSwitch = false
             6 + zwischenspeicher -> runden()
+            8 + zwischenspeicher -> nochNeSwitch = true
         }
 
         torRunterfahren(onoffSwitch,wave,dt)
@@ -461,7 +464,7 @@ class Scene(private val window: GameWindow) {
             }
         }
 
-        if (zeit + zwischenspeicher > 8){
+        if (nochNeSwitch){
             player.playerWalking(player.player, dt, window, cam)
         }
 
