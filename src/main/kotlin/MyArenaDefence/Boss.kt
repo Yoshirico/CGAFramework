@@ -10,7 +10,7 @@ import org.joml.*
 
 class Boss(private val objectpath : String, var radY : Float) {
     var health = 8000
-    var isOn = true
+    var isOn = false
     var currentRadius = radY
     var damage = 10
     val boss : Renderable? = ModelLoader.loadModel(objectpath, Math.toRadians(0.0f), radY, 0.0f)
@@ -25,8 +25,8 @@ class Boss(private val objectpath : String, var radY : Float) {
         }
 
         //enemy.meshes[2].material.emitColor = Vector3f(1.0f, 0.0f, 0.0f)
-        boss.scaleLocal(Vector3f(1.5f))
-        boss.translateLocal(Vector3f(0.0f, 0.0f, -15.0f))
+        boss.scaleLocal(Vector3f(0.5f))
+        boss.translateLocal(Vector3f(0.0f, 0.5f, -15.0f))
     }
 
     fun returnRadius(): Float = currentRadius

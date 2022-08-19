@@ -168,17 +168,17 @@ class Scene(private val window: GameWindow) {
 
         leben1 = Renderable(mutableListOf(meshLeben1))
         leben1.scaleLocal(Vector3f(0.1f))
-        leben1.translateGlobal(Vector3f(0f , 2f, 0f ))
+        leben1.translateGlobal(Vector3f(-0.5f , 2f, 0f ))
         leben1.rotateLocal(0f,0f,0f)
 
         leben2 = Renderable(mutableListOf(meshLeben1))
         leben2.scaleLocal(Vector3f(0.1f))
-        leben2.translateGlobal(Vector3f(1f , 2f, 0f ))
+        leben2.translateGlobal(Vector3f(0f , 2f, 0f ))
         leben2.rotateLocal(0f,0f,0f)
 
         leben3 = Renderable(mutableListOf(meshLeben1))
         leben3.scaleLocal(Vector3f(0.1f))
-        leben3.translateGlobal(Vector3f(-1f , 2f, 0f ))
+        leben3.translateGlobal(Vector3f(0.5f , 2f, 0f ))
         leben3.rotateLocal(0f,0f,0f)
 
         //Arena
@@ -223,9 +223,11 @@ class Scene(private val window: GameWindow) {
         cam.translateLocal(Vector3f(0.0f,  0.0f, 4.0f))
         cam.parent = player.player
         leben1.parent = player.player
+        leben2.parent = player.player
+        leben3.parent = player.player
 
         // Licht
-        spotLight = SpotLight(Vector3f(0.0f, 1.0f, 0.0f), Vector3i(255, 255, 255), 4.5f, 5.5f)
+        spotLight = SpotLight(Vector3f(0.0f, 1.0f, 0.0f), Vector3i(255, 255, 255), 2.5f, 3.5f)
         pointLight = PointLight(Vector3f(0.0f, 1.5f, 0.0f), Vector3i(255, 255, 255))
         licht1 = PointLight(Vector3f(2.0f, 0.0f, 1.0f), Vector3i(255, 255, 255))
         licht2 = PointLight(Vector3f(3.0f, 0.0f, 1.0f), Vector3i(255, 255, 255))
@@ -255,6 +257,8 @@ class Scene(private val window: GameWindow) {
         staticShader.use()
         cam.bind(staticShader)
         leben1.render(staticShader)
+        leben2.render(staticShader)
+        leben3.render(staticShader)
         player.player?.render(staticShader)
         boss.boss?.render(staticShader)
         licht1.bind(staticShader, "point1");
@@ -694,6 +698,7 @@ class Scene(private val window: GameWindow) {
                 }
             }
         }
+    println(player.alive)
     }
 
     fun onKey(key: Int, scancode: Int, action: Int, mode: Int) {}
