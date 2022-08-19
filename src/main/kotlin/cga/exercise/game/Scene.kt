@@ -230,7 +230,7 @@ class Scene(private val window: GameWindow) {
         }
 
         boss = Boss("assets/enemy/boss.obj", 0f)
-
+        boss.boss?.translateLocal(Vector3f(0f,100f,0f))
     }
 
     fun render(dt: Float, t: Float) {
@@ -519,7 +519,16 @@ class Scene(private val window: GameWindow) {
             }
         }
 
-        if (nochNeSwitch){
+        if (!player.alive){
+            player.player?.translateLocal(Vector3f(500f,500f,500f))
+        }
+
+        if (boss.health < 0){
+            boss.isOn = false
+            boss.boss?.translateLocal(Vector3f(200f,0f,0f))
+        }
+
+        if (nochNeSwitch && player.alive){
             player.playerWalking(player.player, dt, window, cam)
         }
 
