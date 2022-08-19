@@ -412,21 +412,6 @@ class Scene(private val window: GameWindow) {
 
     var wave = 1
 
-    fun spawnEnemys(ammount : Int){
-        var upCount = 0
-
-        while (upCount != ammount){
-            if (upCount % 2 ==  0){
-                enemys[upCount].enemy?.setPosition(17f + upCount.toFloat(),1.5f,-20f)
-                enemys[upCount].isOn = true
-            } else {
-                enemys[upCount].enemy?.setPosition(-20f + upCount.toFloat(),1.5f,17f)
-                enemys[upCount].isOn = true
-            }
-            upCount += 1
-        }
-    }
-
     fun bossRound(extraHealth: Int){
         boss.isOn = true
         boss.boss?.setPosition(20f,3f,17f)
@@ -551,9 +536,6 @@ class Scene(private val window: GameWindow) {
             8 + zwischenspeicher -> nochNeSwitch = true
         }
 
-        println(player.player?.getWorldPosition()?.x)
-        println(player.player?.getWorldPosition()?.z)
-
         torRunterfahren(onoffSwitch,wave,dt)
 
         if (window.getKeyState(GLFW.GLFW_KEY_E)) {
@@ -574,7 +556,7 @@ class Scene(private val window: GameWindow) {
             }
         }
 
-        if (!player.alive){
+        if (player.health < 0){
             player.player?.translateLocal(Vector3f(500f,500f,500f))
         }
 
@@ -583,7 +565,7 @@ class Scene(private val window: GameWindow) {
             boss.boss?.translateLocal(Vector3f(200f,0f,0f))
         }
 
-        if (nochNeSwitch && player.alive){
+        if (nochNeSwitch && player.health > 0){
             player.playerWalking(player.player, dt, window, cam)
         }
 
