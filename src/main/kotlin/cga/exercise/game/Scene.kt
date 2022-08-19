@@ -392,7 +392,7 @@ class Scene(private val window: GameWindow) {
                 enemys[upCount].enemy?.setPosition(17f + upCount.toFloat(),1.5f,-20f)
                 enemys[upCount].isOn = true
             } else {
-                enemys[upCount].enemy?.setPosition(21f + upCount.toFloat(),1.5f,-17f)
+                enemys[upCount].enemy?.setPosition(-21f + upCount.toFloat(),1.5f,-17f)
                 enemys[upCount].isOn = true
             }
             upCount += 1
