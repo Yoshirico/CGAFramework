@@ -531,7 +531,7 @@ class Scene(private val window: GameWindow) {
     var nochNeSwitch = false
 
     var nochneVariable = 0
-
+    var taschenlampe = false
     var binlangsamueberfordert = 0f
 
     fun update(dt: Float, t: Float) {
@@ -584,6 +584,9 @@ class Scene(private val window: GameWindow) {
                 boss.health  -= player.damage
             }
         }
+
+        spotLight.innerCone = 0f
+        spotLight.outerCone = 0f
 
         for (enemy in enemys){
             if (enemy.health <= 0){
