@@ -408,20 +408,44 @@ class Scene(private val window: GameWindow) {
             3 -> bossRound(5000)
         }
     }
-    fun debug(){
-        for (i in enemys){
-            println(i.isOn)
+
+    var zwischenspeicher = 0
+    var onoffSwitch = false
+
+    fun torRunterfahren(x : Boolean, p : Int, dt : Float){
+        if (x){
+            when (p) {
+                3 -> {
+                    gate1.translateLocal(Vector3f(0f,-10f*dt,0f))
+                    gate2.translateLocal(Vector3f(0f,-10f*dt,0f))
+                    gate3.translateLocal(Vector3f(0f,-10f*dt,0f))
+                }
+                2 -> {
+                    gate2.translateLocal(Vector3f(0f,-10f*dt,0f))
+                    gate3.translateLocal(Vector3f(0f,-10f*dt,0f))
+                }
+                1 -> {
+                    gate3.translateLocal(Vector3f(0f,-10f*dt,0f))
+                }
+            }
         }
     }
+
     fun update(dt: Float, t: Float) {
-        if (t < 5f){
-            runden()
+
+        val zeit = t.toInt()
+        if (window.getKeyState(GLFW.GLFW_KEY_ENTER)){
+            zwischenspeicher = zeit
         }
-        if(window.getKeyState(GLFW.GLFW_KEY_Q)) {
-            gate1?.translateLocal(Vector3f(0f,-10f*dt,0f))
-            gate2?.translateLocal(Vector3f(0f,-10f*dt,0f))
-            gate3?.translateLocal(Vector3f(0f,-10f*dt,0f))
+
+        when(zeit){
+            1 + zwischenspeicher -> onoffSwitch = true
+            5 + zwischenspeicher -> onoffSwitch = false
+            6 + zwischenspeicher -> runden()
         }
+
+        torRunterfahren(onoffSwitch,wave,dt)
+
         if (window.getKeyState(GLFW.GLFW_KEY_E)) {
             for (you in enemys) {
                 if (attack(you)) {
@@ -430,7 +454,6 @@ class Scene(private val window: GameWindow) {
             }
         }
 
-
         for (enemy in enemys){
             if (enemy.health <= 0){
                 enemy.isOn = false
@@ -438,7 +461,9 @@ class Scene(private val window: GameWindow) {
             }
         }
 
-        player.playerWalking(player.player, dt, window, cam)
+        if (zeit + zwischenspeicher > 8){
+            player.playerWalking(player.player, dt, window, cam)
+        }
 
         if (window.getKeyState(GLFW.GLFW_KEY_C)){
             leben1.translateLocal(Vector3f(0f,20f,0f))
