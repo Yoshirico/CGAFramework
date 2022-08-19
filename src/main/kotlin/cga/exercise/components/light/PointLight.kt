@@ -9,9 +9,9 @@ import java.text.FieldPosition
 
 open class PointLight(position: Vector3f, var color: Vector3i =  Vector3i(255)) : Transformable(), IPointLight {
 
-    var constantAttenuation : Float = 0.3f  // Kc
-    var linearAttenuation : Float = 0.5f    // Kl
-    var quadraticAttenuation : Float = 0.1f // Kq
+    var constantAttenuation : Float = 0.03f  // Kc
+    var linearAttenuation : Float = 0.05f    // Kl
+    var quadraticAttenuation : Float = 0.01f // Kq
 
     init {
         translateLocal(position)

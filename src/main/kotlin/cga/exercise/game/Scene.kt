@@ -168,17 +168,17 @@ class Scene(private val window: GameWindow) {
 
         leben1 = Renderable(mutableListOf(meshLeben1))
         leben1.scaleLocal(Vector3f(0.1f))
-        leben1.translateGlobal(Vector3f(-0.5f , 2f, 0f ))
+        leben1.translateGlobal(Vector3f(-0.5f , 2.5f, 0f ))
         leben1.rotateLocal(0f,0f,0f)
 
         leben2 = Renderable(mutableListOf(meshLeben1))
         leben2.scaleLocal(Vector3f(0.1f))
-        leben2.translateGlobal(Vector3f(0f , 2f, 0f ))
+        leben2.translateGlobal(Vector3f(0f , 2.5f, 0f ))
         leben2.rotateLocal(0f,0f,0f)
 
         leben3 = Renderable(mutableListOf(meshLeben1))
         leben3.scaleLocal(Vector3f(0.1f))
-        leben3.translateGlobal(Vector3f(0.5f , 2f, 0f ))
+        leben3.translateGlobal(Vector3f(0.5f , 2.5f, 0f ))
         leben3.rotateLocal(0f,0f,0f)
 
         //Arena
@@ -228,10 +228,10 @@ class Scene(private val window: GameWindow) {
 
         // Licht
         spotLight = SpotLight(Vector3f(0.0f, 1.0f, 0.0f), Vector3i(255, 255, 255), 0f, 0f)
-        pointLight = PointLight(Vector3f(0.0f, 1.5f, 0.0f), Vector3i(255, 255, 255))
-        licht1 = PointLight(Vector3f(2.0f, 0.0f, 1.0f), Vector3i(255, 255, 255))
-        licht2 = PointLight(Vector3f(3.0f, 0.0f, 1.0f), Vector3i(255, 255, 255))
-        licht3 = PointLight(Vector3f(4.0f, 0.0f, 1.0f), Vector3i(255, 255, 255))
+        pointLight = PointLight(Vector3f(0.0f, 6.0f, 0.0f), Vector3i(255, 255, 255))
+        licht1 = PointLight(Vector3f(-20.0f, 5.0f, 17.0f), Vector3i(255, 0, 255))
+        licht2 = PointLight(Vector3f(20.0f, 5.0f, 17.0f), Vector3i(255, 0, 255))
+        licht3 = PointLight(Vector3f(21.0f, 5.0f, -17.0f), Vector3i(255, 0, 255))
 
         pointLight.parent = player.player
         spotLight.parent = player.player
@@ -435,7 +435,7 @@ class Scene(private val window: GameWindow) {
 
     fun bossRound(extraHealth: Int){
         boss.isOn = true
-        boss.boss?.setPosition(20f,3f,17f)
+        boss.boss?.setPosition(20f,2f,17f)
         boss.boss?.scaleLocal(Vector3f(1.5f))
         boss.health = extraHealth
     }
@@ -584,8 +584,8 @@ class Scene(private val window: GameWindow) {
         }
 
         if (taschenlampe){
-            spotLight.innerCone = 2.5f
-            spotLight.outerCone = 3.5f
+            spotLight.innerCone = 4.5f
+            spotLight.outerCone = 5.5f
         } else {
             spotLight.innerCone = 0f
             spotLight.outerCone = 0f
