@@ -249,6 +249,8 @@ class Scene(private val window: GameWindow) {
 
         boss = Boss("assets/enemy/boss.obj", 0f)
         boss.boss?.translateLocal(Vector3f(0f,100f,0f))
+
+        player.health = 3000
     }
 
     fun render(dt: Float, t: Float) {
@@ -533,6 +535,14 @@ class Scene(private val window: GameWindow) {
     var binlangsamueberfordert = 0f
 
     fun update(dt: Float, t: Float) {
+
+        if(player.health < 2000){
+            leben1.translateLocal(Vector3f(0f,100f,0f))
+        } else if (player.health < 1000){
+            leben2.translateLocal(Vector3f(0f,100f,0f))
+        } else if (player.health < 0){
+            leben3.translateLocal(Vector3f(0f,100f,0f))
+        }
 
         if (checkDeadEnemys() && nochNeSwitch){
             wave += 1
