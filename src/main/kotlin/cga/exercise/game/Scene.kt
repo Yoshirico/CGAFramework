@@ -24,6 +24,7 @@ import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL11.*
 import kotlin.system.exitProcess
 import kotlin.math.pow
+import kotlin.math.sin
 
 /**
  * Created by Fabian on 16.09.2017.
@@ -522,6 +523,8 @@ class Scene(private val window: GameWindow) {
 
     var nochneVariable = 0
 
+    var binlangsamueberfordert = 0f
+
     fun update(dt: Float, t: Float) {
 
         if (checkDeadEnemys() && nochNeSwitch){
@@ -666,6 +669,8 @@ class Scene(private val window: GameWindow) {
                         player.health  -= i.damage
                     }
 
+                    i.enemy.translateLocal(Vector3f(0f, sin(3.5f*binlangsamueberfordert)*dt,0f))
+                    binlangsamueberfordert += 0.2f
 
                     i.enemyLogic(
                         player.player,
