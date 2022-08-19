@@ -400,8 +400,8 @@ class Scene(private val window: GameWindow) {
     }
 
     fun bossRound(extraHealth: Int){
-
-        boss.boss?.setPosition(20f,0f,17f)
+        boss.isOn = true
+        boss.boss?.setPosition(20f,3f,17f)
         boss.boss?.scaleLocal(Vector3f(1.5f))
         boss.health = extraHealth
     }
@@ -419,7 +419,7 @@ class Scene(private val window: GameWindow) {
         }
     }
 
-    var zwischenspeicher = 0
+    var zwischenspeicher = 500
     var onoffSwitch = false
 
     fun torRunterfahren(x : Boolean, p : Int, dt : Float){
