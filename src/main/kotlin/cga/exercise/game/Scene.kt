@@ -225,7 +225,7 @@ class Scene(private val window: GameWindow) {
             anzahlGegner -= 1
         }
         for(i in enemys){
-            i.enemy?.translateLocal(Vector3f(p, 3.0f, 50f))
+            i.enemy?.translateLocal(Vector3f(p, 3.0f, 130f))
             p += 5f
         }
 
@@ -240,6 +240,7 @@ class Scene(private val window: GameWindow) {
         cam.bind(staticShader)
         leben1.render(staticShader)
         player.player?.render(staticShader)
+        boss.boss?.render(staticShader)
         licht1.bind(staticShader, "point1");
         licht2.bind(staticShader, "point2");
         licht3.bind(staticShader, "point3");
@@ -250,7 +251,6 @@ class Scene(private val window: GameWindow) {
         gate2.render(staticShader)
         gate3.render(staticShader)
         ground.render(staticShader)
-
         for (i in enemys){
             i.enemy?.render(staticShader)
         }
@@ -401,9 +401,9 @@ class Scene(private val window: GameWindow) {
 
     fun bossRound(extraHealth: Int){
 
-        boss.boss?.setPosition(0f,0f,0f)
-        boss.boss?.scaleLocal(Vector3f(3f))
-        enemys[0].health = extraHealth
+        boss.boss?.setPosition(20f,0f,17f)
+        boss.boss?.scaleLocal(Vector3f(1.5f))
+        boss.health = extraHealth
     }
 
     fun runden(){
@@ -454,12 +454,21 @@ class Scene(private val window: GameWindow) {
 
     var nochNeSwitch = false
 
+    var nochneVariable = 0
+
     fun update(dt: Float, t: Float) {
 
         if (checkDeadEnemys() && nochNeSwitch){
             wave += 1
             runden()
+            nochneVariable = 500
         }
+
+        if (nochneVariable != 0){
+            torRunterfahren(true,wave,dt)
+            nochneVariable -= 1
+        }
+
 
         val zeit = t.toInt()
         if (window.getKeyState(GLFW.GLFW_KEY_ENTER)){
@@ -538,6 +547,33 @@ class Scene(private val window: GameWindow) {
             if (jumpSpeed < 0.02) {
                 jumpDirection = true
                 player.player!!.setPosition(player.player!!.getWorldPosition().x, 0.0f, player.player!!.getWorldPosition().z)
+            }
+        }
+
+
+        if (boss.isOn) {
+            val deg = followMe(player.player, boss.boss).toFloat()
+            val x = distanceToSomething(player.player, boss.boss)
+
+            boss.enemyLogic(
+                player.player,
+                dt,
+                x,
+                deg
+            )
+
+            boss.drive(dt, 5f)
+
+            if (ich_hab_langsam_keine_ahnung_mehr_wie_ich_die_ganzen_funktionen_nennen_soll(
+                    distanceToSomething(
+                        player.player,
+                        boss.boss
+                    )
+                ) < 5f
+            ) {
+                if (colision(player.player, boss.boss, dt)) {
+                    player.takeDamage(boss.damage)
+                }
             }
         }
 
